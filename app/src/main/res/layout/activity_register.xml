@@ -7,40 +7,46 @@
     android:padding="16dp">
 
     <!-- Email EditText -->
-
     <EditText
-        android:id="@+id/editTextLoginEmail"
+        android:id="@+id/editTextRegisterEmail"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:hint="Email"
-        android:inputType="text" />
+        android:inputType="textEmailAddress" />
 
     <!-- Password EditText -->
     <EditText
-        android:id="@+id/editTextLoginPassword"
+        android:id="@+id/editTextRegisterPassword"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:hint="Password"
         android:inputType="textPassword" />
 
-    <!-- Login Button -->
+    <!-- Confirm Password EditText -->
+    <EditText
+        android:id="@+id/editTextConfirmPassword"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:hint="Confirm Password"
+        android:inputType="textPassword" />
+
+    <!-- Register Button -->
     <ProgressBar
-        android:id="@+id/progressBarLogin"
+        android:id="@+id/progressBarRegister"
         android:visibility="gone"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="wrap_content" />
     <Button
-        android:id="@+id/buttonLogin"
+        android:id="@+id/buttonRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login" />
+        android:text="Register" />
 
     <TextView
-        android:id="@+id/textViewRegisterLink"
+        android:id="@+id/textViewLoginLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dont have an account? Register here!"
+        android:text="Already have an account? Log in"
         android:layout_marginTop="16dp"
         android:gravity="center_horizontal" />
 
