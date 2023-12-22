@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "pt.uc.dei.cm.plantsmc"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "pt.uc.dei.cm.plantsmc"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
