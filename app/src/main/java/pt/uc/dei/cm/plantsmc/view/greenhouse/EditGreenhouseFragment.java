@@ -28,7 +28,7 @@ public class EditGreenhouseFragment extends Fragment {
     private Greenhouse greenhouse;
     private GreenhouseHolder parent;
 
-    private Button addGreenhouseButton;
+    private Button saveGreenhouseButton;
     private EditText greenhouseNameEditText;
 
     public EditGreenhouseFragment() {
@@ -67,7 +67,7 @@ public class EditGreenhouseFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Set up views
-        addGreenhouseButton = view.findViewById(R.id.saveGreenhouseButton);
+        saveGreenhouseButton = view.findViewById(R.id.saveGreenhouseButton);
         greenhouseNameEditText = view.findViewById(R.id.greenhouseNameEditText);
 
         if (greenhouse != null) {
@@ -75,7 +75,7 @@ public class EditGreenhouseFragment extends Fragment {
         }
 
         // Set up listeners
-        addGreenhouseButton.setOnClickListener(v -> {
+        saveGreenhouseButton.setOnClickListener(v -> {
             String greenhouseName = greenhouseNameEditText.getText().toString();
             if (greenhouseName.isEmpty()) {
                 greenhouseNameEditText.setError("Please enter a name for the greenhouse");

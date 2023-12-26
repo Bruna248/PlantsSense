@@ -22,6 +22,7 @@ import pt.uc.dei.cm.plantsmc.view.plant.EditPlantFragment;
 import pt.uc.dei.cm.plantsmc.view.plant.PlantDetailFragment;
 import pt.uc.dei.cm.plantsmc.view.plant.PlantsFragment;
 import pt.uc.dei.cm.plantsmc.viewmodel.PlantViewModel;
+import pt.uc.dei.cm.plantsmc.viewmodel.UserViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,7 +33,8 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
 
     private static final String ARG_GREENHOUSE = "arg_greenhouse";
     private Greenhouse greenhouse;
-    private PlantViewModel viewModel;
+    private PlantViewModel plantViewModel;
+    private UserViewModel userViewModel;
 
     // This method is used to create new instances of the fragment with a greenhouse object
     public static GreenhouseDetailFragment newInstance(Greenhouse greenhouse) {
@@ -49,7 +51,8 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
         if (getArguments() != null) {
             greenhouse = (Greenhouse) getArguments().getSerializable(ARG_GREENHOUSE);
         }
-        viewModel = new ViewModelProvider(this).get(PlantViewModel.class);
+        plantViewModel = new ViewModelProvider(this).get(PlantViewModel.class);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
         // Set up the default fragment
         if (savedInstanceState == null) {
@@ -86,7 +89,7 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
             getChildFragmentManager().popBackStack();
         }
 
-        EditPlantFragment editPlantFragment = EditPlantFragment.newInstance(null, greenhouse.getId());
+        EditPlantFragment editPlantFragment = EditPlantFragment.newInstance(null);
         getChildFragmentManager().beginTransaction().replace(R.id.plantsFragmentContainer, editPlantFragment)
                 .addToBackStack(null)
                 .commit();
@@ -102,9 +105,13 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
 
     @Override
     public void savePlant(Plant plant) {
-        viewModel.addPlant(plant);
 
-        viewModel.getPlants().observe(this, plants -> {
+        plant.setGreenhouseId(greenhouse.getId());
+        plant.setUserId(userViewModel.getCurrentUser().getValue().getUid());
+
+        plantViewModel.addPlant(plant);
+
+        plantViewModel.getPlantsByGreenhouse().observe(this, plants -> {
             if (plants != null) {
                 PlantsFragment newFragment = PlantsFragment.newInstance(greenhouse.getId());
                 getChildFragmentManager().beginTransaction().replace(R.id.plantsFragmentContainer, newFragment)

@@ -27,9 +27,7 @@ public class EditPlantFragment extends Fragment {
 
 
     private static final String ARG_PLANT = "arg_plant";
-    private static final String ARG_GREENHOUSE_ID = "arg_greenhouse_id";
     private Plant plant;
-    private String greenhouseId;
     private PlantsHolder parent;
     private EditText plantNameEditText;
     private EditText plantSpecieEditText;
@@ -52,11 +50,10 @@ public class EditPlantFragment extends Fragment {
         }
     }
 
-    public static EditPlantFragment newInstance(@Nullable Plant plant, String greenhouseId) {
+    public static EditPlantFragment newInstance(@Nullable Plant plant) {
         EditPlantFragment fragment = new EditPlantFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_PLANT, plant);
-        args.putString(ARG_GREENHOUSE_ID, greenhouseId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,7 +63,6 @@ public class EditPlantFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             plant = (Plant) getArguments().getSerializable(ARG_PLANT);
-            greenhouseId = getArguments().getString(ARG_GREENHOUSE_ID);
         }
 
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
@@ -102,8 +98,6 @@ public class EditPlantFragment extends Fragment {
             // Create plant object
             this.plant = new Plant(
                     plantName,
-                    greenhouseId,
-                    userViewModel.getCurrentUser().getValue().getUid(),
                     plantSpecie);
 
             parent.savePlant(plant);

@@ -29,7 +29,7 @@ public class PlantRepository {
     public MutableLiveData<List<Plant>> getPlants() {
         MutableLiveData<List<Plant>> liveData = new MutableLiveData<>();
 
-        firestore.collection("greenhouses")
+        firestore.collection("plants")
                 .whereEqualTo("userId", FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements GreenhouseHolder 
     }
 
     private void init_data() {
-        userViewModel.setUser(userViewModel.getCurrentUser().getValue());
+        userViewModel.setUser(FirebaseAuth.getInstance().getCurrentUser());
     }
 
     private void setup_logout() {

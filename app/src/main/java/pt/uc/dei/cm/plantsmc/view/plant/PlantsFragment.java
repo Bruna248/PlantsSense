@@ -20,7 +20,7 @@ import pt.uc.dei.cm.plantsmc.view.adapters.PlantAdapter;
 import pt.uc.dei.cm.plantsmc.view.adapters.PlantsHolder;
 import pt.uc.dei.cm.plantsmc.viewmodel.PlantViewModel;
 
-public class PlantsFragment extends Fragment implements PlantsHolder {
+public class PlantsFragment extends Fragment {
 
     private static final String ARG_GREENHOUSE_ID = "arg_greenhouse_id";
     private PlantViewModel viewModel;
@@ -93,20 +93,5 @@ public class PlantsFragment extends Fragment implements PlantsHolder {
 
             parent.onAddPlant();
         });
-    }
-
-    @Override
-    public void onAddPlant() {
-        parent.onAddPlant();
-    }
-
-    @Override
-    public void onPlantClick(Plant plant) {
-        parent.onPlantClick(plant);
-    }
-
-    @Override
-    public void savePlant(Plant plant) {
-        parent.savePlant(plant);
     }
 }

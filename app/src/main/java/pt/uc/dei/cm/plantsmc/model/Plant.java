@@ -24,6 +24,11 @@ public class Plant implements Serializable {
         this.specie = specie;
     }
 
+    public Plant(String name, String specie) {
+        this.name = name;
+        this.specie = specie;
+    }
+
     public Plant() {
     }
 

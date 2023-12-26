@@ -7,11 +7,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import pt.uc.dei.cm.plantsmc.model.Greenhouse;
 import pt.uc.dei.cm.plantsmc.model.Plant;
 import pt.uc.dei.cm.plantsmc.model.PlantRepository;
 import pt.uc.dei.cm.plantsmc.model.SensorData;
@@ -22,7 +22,7 @@ public class PlantViewModel extends ViewModel {
     private MutableLiveData<List<Plant>> plantsByGreenhouse = new MutableLiveData<>();
     private final MutableLiveData<Plant> selectedPlant = new MutableLiveData<>();
     private final PlantRepository repository;
-    private Map<String, MutableLiveData<SensorData>> plantSensorDataMap = new HashMap<>();
+    private final Map<String, MutableLiveData<SensorData>> plantSensorDataMap = new HashMap<>();
 
     public PlantViewModel() {
         repository = new PlantRepository();
@@ -130,6 +130,15 @@ public class PlantViewModel extends ViewModel {
         repository.addPlant(plant, task -> {
             if (task.isSuccessful()) {
                 Log.d("Firestore", "Plant added successfully");
+                String newPlantId = task.getResult().getId();
+                plant.setId(newPlantId);
+
+                List<Plant> updatedList = plantsByGreenhouse.getValue();
+                if (updatedList == null) {
+                    updatedList = new ArrayList<>();
+                }
+                updatedList.add(plant);
+                plantsByGreenhouse.postValue(updatedList);
             } else {
                 Exception e = task.getException();
                 Log.e("Firestore", "Error adding plant", e);
