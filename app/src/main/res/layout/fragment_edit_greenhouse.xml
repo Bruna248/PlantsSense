@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".view.greenhouse.EditGreenhouseFragment">
 
     <!-- Top Bar -->
     <LinearLayout
@@ -11,6 +13,13 @@
         android:orientation="horizontal"
         android:padding="16dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Greenhouse"
+            android:textSize="24sp"
+            android:textStyle="bold"/>
+
         <!-- Spacer -->
         <View
             android:layout_width="0dp"
@@ -18,17 +27,18 @@
             android:layout_weight="1" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/saveGreenhouseButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Logout"/>
+            android:text="Save"/>
     </LinearLayout>
 
-
-    <!-- Greenhouses Fragments -->
-    <FrameLayout
-        android:id="@+id/greenhousesFragmentContainer"
+    <!-- Greenhouse Name -->
+    <EditText
+        android:id="@+id/greenhouseNameEditText"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:hint="Greenhouse Name"
+        android:padding="16dp"/>
 
 </LinearLayout>

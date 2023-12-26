@@ -1,23 +1,46 @@
 package pt.uc.dei.cm.plantsmc.model;
 
-public class Plant {
-    private int id;
+import java.io.Serializable;
+
+public class Plant implements Serializable {
+    private String id;
     private String name;
-    private int greenhouseId;
+    private String greenhouseId;
+    private String userId;
     private String specie;
 
-    public Plant(int id, String name, int greenhouseId, String specie) {
+    public Plant(String id, String name, String greenhouseId, String userId, String specie) {
         this.id = id;
         this.name = name;
         this.greenhouseId = greenhouseId;
+        this.userId = userId;
+        this.specie = specie;
+    }
+
+    public Plant(String name, String greenhouseId, String userId, String specie) {
+        this.name = name;
+        this.greenhouseId = greenhouseId;
+        this.userId = userId;
         this.specie = specie;
     }
 
     public Plant() {
     }
 
-    public int getId() {
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
         return id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -28,11 +51,11 @@ public class Plant {
         this.name = name;
     }
 
-    public int getGreenhouseId() {
+    public String getGreenhouseId() {
         return greenhouseId;
     }
 
-    public void setGreenhouseId(int greenhouseId) {
+    public void setGreenhouseId(String greenhouseId) {
         this.greenhouseId = greenhouseId;
     }
 

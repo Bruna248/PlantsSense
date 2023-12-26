@@ -34,7 +34,6 @@ public class RegisterActivity extends AppCompatActivity {
     private Button buttonRegister;
     private ProgressBar progressBar;
     private FirebaseAuth mAuth;
-    private UserViewModel userViewModel;
 
     @Override
     protected void onStart() {
@@ -58,8 +57,6 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         mAuth = FirebaseAuth.getInstance();
-
-        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
         editTextEmail = findViewById(R.id.editTextRegisterEmail);
         editTextPassword = findViewById(R.id.editTextRegisterPassword);
@@ -86,7 +83,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         Log.d(TAG, "createUserWithEmail:success");
-                                        userViewModel.setUser(mAuth.getCurrentUser());
+                                        redirectToMainActivity();
                                     } else {
                                         Log.w(TAG, "createUserWithEmail:failure", task.getException());
                                         Toast.makeText(RegisterActivity.this, "Authentication failed.",
@@ -110,15 +107,6 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
-            }
-        });
-
-        userViewModel.getCurrentUser().observe(this, new Observer<FirebaseUser>() {
-            @Override
-            public void onChanged(FirebaseUser firebaseUser) {
-                if (firebaseUser != null) {
-                    redirectToMainActivity();
-                }
             }
         });
     }

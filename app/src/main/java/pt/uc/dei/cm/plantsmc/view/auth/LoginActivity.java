@@ -34,7 +34,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button buttonLogin;
     private ProgressBar progressBar;
     private FirebaseAuth mAuth;
-    private UserViewModel userViewModel;
 
     @Override
     protected void onStart() {
@@ -59,8 +58,6 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-
         editTextEmail = findViewById(R.id.editTextLoginEmail);
         editTextPassword = findViewById(R.id.editTextLoginPassword);
         buttonLogin = findViewById(R.id.buttonLogin);
@@ -77,6 +74,22 @@ public class LoginActivity extends AppCompatActivity {
                 String email = editTextEmail.getText().toString();
                 String password = editTextPassword.getText().toString();
 
+                if(email.isEmpty()){
+                    editTextEmail.setError("Email is required");
+                    editTextEmail.requestFocus();
+                    progressBar.setVisibility(View.GONE);
+                    buttonLogin.setVisibility(View.VISIBLE);
+                    return;
+                }
+
+                if(password.isEmpty()){
+                    editTextPassword.setError("Password is required");
+                    editTextPassword.requestFocus();
+                    progressBar.setVisibility(View.GONE);
+                    buttonLogin.setVisibility(View.VISIBLE);
+                    return;
+                }
+
 
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -84,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     Log.d(TAG, "signInWithEmail:success");
-                                    userViewModel.setUser(mAuth.getCurrentUser());
+                                    redirectToMainActivity();
                                 } else {
                                     Log.w(TAG, "signInWithEmail:failure", task.getException());
                                     Toast.makeText(LoginActivity.this, "Authentication failed.",
@@ -101,15 +114,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivities(new Intent[]{new Intent(LoginActivity.this, RegisterActivity.class)});
-            }
-        });
-
-        userViewModel.getCurrentUser().observe(this, new Observer<FirebaseUser>() {
-            @Override
-            public void onChanged(FirebaseUser firebaseUser) {
-                if (firebaseUser != null) {
-                    redirectToMainActivity();
-                }
             }
         });
     }

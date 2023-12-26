@@ -19,8 +19,6 @@ public class UserViewModel extends ViewModel {
         return currentUser;
     }
 
-    // You can add methods to update this user data as needed
-    // For example, after a successful login or logout
     public void setUser(FirebaseUser user) {
         currentUser.setValue(user);
     }
