@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "709163030511",
+    "project_id": "plantsense-315e6",
+    "storage_bucket": "plantsense-315e6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:709163030511:android:2ac07fc3da04c33e39c81a",
+        "android_client_info": {
+          "package_name": "pt.uc.dei.cm.plantsmc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCufH7M-Qo8bihsVC60AgHu8-yE9-QLsAA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
