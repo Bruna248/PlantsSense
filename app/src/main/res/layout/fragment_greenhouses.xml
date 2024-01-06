@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     tools:context=".view.greenhouse.GreenhousesFragment">
@@ -25,20 +26,43 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1" />
+    </LinearLayout>
 
-        <!-- Watch Button -->
+    <!-- Greenhouses List -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="My Fields"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/greenhouseRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:layout_marginBottom="10dp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="2">
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <!-- Add Field Button -->
         <Button
             android:id="@+id/addGreenhouseButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add"/>
-    </LinearLayout>
+            android:text="Add Field"
+            android:layout_gravity="center"/>
 
-    <!-- Greenhouses List -->
-    <androidx.recyclerview.widget.RecyclerView android:id="@+id/greenhouseRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp">
-    </androidx.recyclerview.widget.RecyclerView>
+    </LinearLayout>
 
 </LinearLayout>
