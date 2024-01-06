@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    tools:context=".view.plant.PlantsFragment">
+    tools:context=".view.sensors.SensorsFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Plants"
+            android:text="Sensors"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
@@ -26,13 +26,13 @@
             android:layout_weight="1" />
 
         <Button
-            android:id="@+id/addPlantButton"
+            android:id="@+id/addSensorButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add"/>
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView android:id="@+id/plantRecyclerView"
+    <androidx.recyclerview.widget.RecyclerView android:id="@+id/sensorRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp">
