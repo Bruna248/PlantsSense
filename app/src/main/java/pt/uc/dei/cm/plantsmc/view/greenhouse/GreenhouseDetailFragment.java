@@ -6,17 +6,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
 import java.io.Serializable;
 
 import pt.uc.dei.cm.plantsmc.R;
 import pt.uc.dei.cm.plantsmc.model.Greenhouse;
 import pt.uc.dei.cm.plantsmc.model.Plant;
+import pt.uc.dei.cm.plantsmc.view.adapters.DemoCollectionAdapter;
 import pt.uc.dei.cm.plantsmc.view.adapters.PlantsHolder;
 import pt.uc.dei.cm.plantsmc.view.plant.EditPlantFragment;
 import pt.uc.dei.cm.plantsmc.view.plant.PlantDetailFragment;
@@ -36,6 +42,8 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
     private PlantViewModel plantViewModel;
     private UserViewModel userViewModel;
 
+    DemoCollectionAdapter demoCollectionAdapter;
+    ViewPager2 viewPager;
     // This method is used to create new instances of the fragment with a greenhouse object
     public static GreenhouseDetailFragment newInstance(Greenhouse greenhouse) {
         GreenhouseDetailFragment fragment = new GreenhouseDetailFragment();
@@ -51,15 +59,16 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
         if (getArguments() != null) {
             greenhouse = (Greenhouse) getArguments().getSerializable(ARG_GREENHOUSE);
         }
+
         plantViewModel = new ViewModelProvider(this).get(PlantViewModel.class);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
         // Set up the default fragment
-        if (savedInstanceState == null) {
+        /*if (savedInstanceState == null) {
             PlantsFragment plantsFragment = PlantsFragment.newInstance(greenhouse.getId());
             getChildFragmentManager().beginTransaction().replace(R.id.plantsFragmentContainer, plantsFragment)
                     .commit();
-        }
+        }*/
     }
 
     @Override
@@ -74,12 +83,35 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
             textViewName.setText(greenhouse.getName());
         }
 
+        ShapeableImageView imageView= view.findViewById(R.id.field_image);
+        imageView.setImageResource(R.drawable.field1);
+
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        demoCollectionAdapter = new DemoCollectionAdapter(this,greenhouse.getId());
+        viewPager = view.findViewById(R.id.pager);
+        viewPager.setAdapter(demoCollectionAdapter);
+
+        TabLayout tabLayout = view.findViewById(R.id.tab_layout);
+
+        new TabLayoutMediator(tabLayout, viewPager,
+                (tab, position) -> {
+                    if (position ==0) {
+                        // Use the existing tabs from the XML layout
+                        tab.setText("Sensors");
+                    } else if (position==1) {
+                        tab.setText("Plants");
+                    } else {
+                        // Generate tabs for positions beyond the existing tabs
+                        tab.setText("OBJECT " + (position + 1));
+                    }
+                }
+        ).attach();
     }
 
 
@@ -98,7 +130,7 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
     @Override
     public void onPlantClick(Plant plant) {
         PlantDetailFragment plantDetailFragment = PlantDetailFragment.newInstance(plant);
-        getChildFragmentManager().beginTransaction().replace(R.id.plantsFragmentContainer, plantDetailFragment)
+        getParentFragmentManager().beginTransaction().replace(R.id.greenhousesFragmentContainer, plantDetailFragment)
                 .addToBackStack(null)
                 .commit();
     }

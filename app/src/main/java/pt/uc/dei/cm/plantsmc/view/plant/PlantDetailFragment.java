@@ -13,6 +13,8 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.imageview.ShapeableImageView;
+
 import org.w3c.dom.Text;
 
 import java.io.Serializable;
@@ -69,7 +71,10 @@ public class PlantDetailFragment extends Fragment {
         TextView plantNameTextView = view.findViewById(R.id.plantNameTextView);
         plantNameTextView.setText(plant.getName());
 
-        TextView plantIdTextView = view.findViewById(R.id.plantIdTextView);
+        ShapeableImageView imageView=view.findViewById(R.id.field_image_plant_detail);
+        imageView.setImageResource(R.drawable.field1);
+
+        /*TextView plantIdTextView = view.findViewById(R.id.plantIdTextView);
         plantIdTextView.setText("@" + plant.getId());
 
         TextView specieNameTextView = view.findViewById(R.id.specieNameTextView);
@@ -83,15 +88,15 @@ public class PlantDetailFragment extends Fragment {
 
         sensorContainer.addView(temperatureView);
         sensorContainer.addView(humidityView);
-
+*/
         plantViewModel.getTemperatureDataForPlant(plant.getId()).observe(getViewLifecycleOwner(), temperature -> {
-            TextView temperatureSensorDataTextView = temperatureView.findViewById(R.id.sensorValueTextView);
-            temperatureSensorDataTextView.setText(String.format("%s º", temperature));
+            //TextView temperatureSensorDataTextView = temperatureView.findViewById(R.id.sensorValueTextView);
+            //temperatureSensorDataTextView.setText(String.format("%s º", temperature));
         });
 
         plantViewModel.getHumidityDataForPlant(plant.getId()).observe(getViewLifecycleOwner(), humidity -> {
-            TextView humiditySensorDataTextView = humidityView.findViewById(R.id.sensorValueTextView);
-            humiditySensorDataTextView.setText(String.format("%s %%", humidity));
+            //TextView humiditySensorDataTextView = humidityView.findViewById(R.id.sensorValueTextView);
+            //humiditySensorDataTextView.setText(String.format("%s %%", humidity));
         });
 
         return view;

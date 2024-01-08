@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements GreenhouseHolder 
         // Logout button
         setup_logout();
 
-        MQTTUtils.initializeChannel(this, greenhouseViewModel, plantViewModel);
+        //MQTTUtils.initializeChannel(this, greenhouseViewModel, plantViewModel);
 
         // Observers for view models
         userViewModel.getCurrentUser().observe(this, firebaseUser -> {

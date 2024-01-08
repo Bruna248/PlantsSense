@@ -6,6 +6,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.imageview.ShapeableImageView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +28,7 @@ public class GreenhouseAdapter extends RecyclerView.Adapter<GreenhouseAdapter.Vi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.greenhouse_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.greenhouse_list_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -33,6 +36,9 @@ public class GreenhouseAdapter extends RecyclerView.Adapter<GreenhouseAdapter.Vi
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Greenhouse greenhouse = greenhouseList.get(position);
         holder.greenhouseNameTextView.setText(greenhouse.getName());
+        holder.imageView.setImageResource(R.drawable.field1);
+
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,9 +65,11 @@ public class GreenhouseAdapter extends RecyclerView.Adapter<GreenhouseAdapter.Vi
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView greenhouseNameTextView;
 
+        ShapeableImageView imageView;
         public ViewHolder(View itemView) {
             super(itemView);
-            greenhouseNameTextView = itemView.findViewById(R.id.greenhouseNameTextView);
+            greenhouseNameTextView = itemView.findViewById(R.id.field_name);
+            imageView=itemView.findViewById(R.id.field_image);
             // Initialize other views from the item layout if they exist
         }
     }

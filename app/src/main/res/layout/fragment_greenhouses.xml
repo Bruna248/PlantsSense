@@ -1,44 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    tools:context=".view.greenhouse.GreenhousesFragment">
+    android:background="@color/green_strong">
 
-    <!-- Top Bar -->
-    <LinearLayout
+    <View
+        android:id="@+id/top_view2"
         android:layout_width="match_parent"
+        android:layout_height="600dp"
+        android:background="@drawable/login_rectangle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:text="Hello, Username!"
+        android:textColor="#F6F1F1"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/top_view2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.847"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.733" />
 
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:text="MyFields"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.164"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/top_view2" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Greenhouses"
-            android:textSize="24sp"
-            android:textStyle="bold"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <!-- Watch Button -->
-        <Button
-            android:id="@+id/addGreenhouseButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add"/>
-    </LinearLayout>
-
-    <!-- Greenhouses List -->
-    <androidx.recyclerview.widget.RecyclerView android:id="@+id/greenhouseRecyclerView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/greenhouseRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp">
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_height="350dp"
+        android:layout_marginTop="112dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/top_view2"
+        android:padding="15dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2"/>
 
-</LinearLayout>
+    <Button
+        android:id="@+id/addGreenhouseButton"
+        android:layout_width="130dp"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:backgroundTint="#1DD08F"
+        android:text="Add Fields"
+        android:textSize="12sp"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/top_view2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/greenhouseRecyclerView" />
+</androidx.constraintlayout.widget.ConstraintLayout>

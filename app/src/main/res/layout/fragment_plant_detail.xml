@@ -1,92 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/green_strong"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="20dp">
 
-    <!-- Top Section -->
+    <!-- Top Bar
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp">
+
         <TextView
-            android:id="@+id/plantNameTextView"
+            android:id="@+id/greenhouseNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="24sp"
             android:textStyle="bold"/>
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+    </LinearLayout> -->
 
-    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:orientation="vertical">
+
+        <!-- Field Info -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_margin="20dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/field_image_plant_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="10dp"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/Round10"
+                tools:src="@drawable/field1" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/plantNameTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Field Name"
+                    android:textColor="#F6F0F0"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/field"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Field 1"
+                    android:textColor="#F3EFEF"
+                    android:textSize="15sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:id="@+id/fieldCreationDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Added Date"
+                    android:textColor="#F3EFEF"
+                    android:textSize="15sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/CreationDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date"
+                    android:textColor="#F3EFEF"
+                    android:textSize="15sp"
+                   />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- TabLayout - Sensors and Plants -->
 
         <TextView
-            android:id="@+id/plantIdTextView"
+            android:id="@+id/Plant_Description"
+            android:layout_marginStart="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Plant Description"
+            android:textColor="#F3EFEF"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <View
+            android:id="@+id/top_view111"
+            android:layout_gravity="center"
+            android:layout_width="300dp"
+            android:layout_height="110dp"
+            android:layout_marginTop="12dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/sensor_rectangle"
+             />
+
+            <EditText
+                android:id="@+id/editTextText"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:inputType="text"
+                android:text="--" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/Sensors_Description"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sensors"
+            android:textColor="#F3EFEF"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+        <!--
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_margin="20dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/photoRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"/>
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_margin="20dp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="2" /> -->
+        <Button
+            android:id="@+id/addGreenhouseButton"
+            android:layout_width="130dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:backgroundTint="#1DD08F"
+            android:text="Add Sensor"
+            android:textSize="12sp"
+            app:cornerRadius="20dp"
+            android:layout_gravity="center"
+/>
 
+        <Button
+            android:id="@+id/Plant_Notes"
+            android:layout_width="130dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:backgroundTint="#1DD08F"
+            android:text="Plant Notes"
+            android:textSize="12sp"
+            app:cornerRadius="20dp"
+            android:layout_gravity="center"
+            />
     </LinearLayout>
 
+</ScrollView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp">
-        <TextView
-            android:id="@+id/specieNameTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-    </LinearLayout>
 
-    <!-- Sensor Data -->
-    <LinearLayout
-        android:id="@+id/sensorContainerLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
-        <!--<TextView
-            android:id="@+id/temperatureSensorDataTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:layout_marginBottom="8dp"/>
 
-        <TextView
-            android:id="@+id/humiditySensorDataTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:layout_marginBottom="8dp"/>
 
-        <TextView
-            android:id="@+id/lightSensorDataTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:layout_marginBottom="8dp"/>-->
-    </LinearLayout>
 
-</LinearLayout>

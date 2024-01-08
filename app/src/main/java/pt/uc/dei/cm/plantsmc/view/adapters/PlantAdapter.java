@@ -8,6 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.imageview.ShapeableImageView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +38,8 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantAdapter.ViewHolder> 
         Plant plant = plantList.get(position);
         holder.plantNameTextView.setText(plant.getName());
 
+        holder.imageView.setImageResource(R.drawable.field1);
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,10 +64,11 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantAdapter.ViewHolder> 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView plantNameTextView;
-
+        ShapeableImageView imageView;
         public ViewHolder(View itemView) {
             super(itemView);
             plantNameTextView = itemView.findViewById(R.id.plantNameTextView);
+            imageView=itemView.findViewById(R.id.field_image_plant);
             // Initialize other views from the item layout if they exist
         }
     }
