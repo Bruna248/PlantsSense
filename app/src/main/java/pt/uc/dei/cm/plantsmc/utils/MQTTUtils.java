@@ -63,6 +63,11 @@ public class MQTTUtils {
 
                     // Parse the topic to determine if it's a greenhouse or plant message
                     String[] topicLevels = publish.getTopic().getLevels().toArray(new String[0]);
+
+                    if (topicLevels.length < 3){
+                        return;
+                    }
+
                     if (topicLevels[0].equals("greenhouse")) {
                         // Handle greenhouse sensor data
                         String greenhouseID = topicLevels[1];
