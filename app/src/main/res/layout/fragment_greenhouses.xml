@@ -9,31 +9,33 @@
     <View
         android:id="@+id/top_view2"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/login_rectangle"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
     <TextView
         android:id="@+id/textView8"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
         android:text="Hello, Username!"
+        android:textAlignment="viewEnd"
         android:textColor="#F6F1F1"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/top_view2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.847"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.733" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="32dp"
         android:text="MyFields"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -45,21 +47,20 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/greenhouseRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
-        android:layout_marginTop="112dp"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/top_view2"
+        android:layout_height="0dp"
         android:padding="15dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"/>
+        app:layout_constraintBottom_toTopOf="@+id/addGreenhouseButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView10"
+        app:spanCount="2" />
 
     <Button
         android:id="@+id/addGreenhouseButton"
         android:layout_width="130dp"
         android:layout_height="50dp"
+        android:layout_marginBottom="32dp"
         android:layout_weight="1"
         android:backgroundTint="#1DD08F"
         android:text="Add Fields"
@@ -67,6 +68,5 @@
         app:cornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/top_view2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/greenhouseRecyclerView" />
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -32,16 +32,17 @@
         <!-- Field Info -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_margin="20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginBottom="20dp"
             android:orientation="horizontal">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/field_image_plant_detail"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_height="150dp"
                 android:layout_marginEnd="10dp"
+                android:layout_weight="1"
                 android:scaleType="centerCrop"
                 app:shapeAppearanceOverlay="@style/Round10"
                 tools:src="@drawable/field1" />
@@ -49,8 +50,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginStart="10dp"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
@@ -66,10 +67,10 @@
                     android:id="@+id/field"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
                     android:text="Field 1"
                     android:textColor="#F3EFEF"
-                    android:textSize="15sp"
-                    android:layout_marginBottom="12dp"/>
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/fieldCreationDate"
@@ -78,7 +79,7 @@
                     android:text="Added Date"
                     android:textColor="#F3EFEF"
                     android:textSize="15sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/CreationDate"
@@ -86,8 +87,7 @@
                     android:layout_height="wrap_content"
                     android:text="Date"
                     android:textColor="#F3EFEF"
-                    android:textSize="15sp"
-                   />
+                    android:textSize="15sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -95,9 +95,9 @@
 
         <TextView
             android:id="@+id/Plant_Description"
-            android:layout_marginStart="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
             android:text="Plant Description"
             android:textColor="#F3EFEF"
             android:textSize="20sp"
@@ -105,31 +105,34 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <View
-            android:id="@+id/top_view111"
-            android:layout_gravity="center"
-            android:layout_width="300dp"
-            android:layout_height="110dp"
-            android:layout_marginTop="12dp"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/sensor_rectangle"
-             />
+
+            <View
+                android:id="@+id/top_view111"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="8dp"
+                android:background="@drawable/sensor_rectangle" />
 
             <EditText
-                android:id="@+id/editTextText"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_centerInParent="true"
-                android:inputType="text"
-                android:text="--" />
+                android:id="@+id/editDescriptionPlant"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="23dp"
+                android:layout_marginVertical="3dp"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:maxHeight="235dp" />
+
         </RelativeLayout>
 
         <TextView
             android:id="@+id/Sensors_Description"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:text="Sensors"
             android:textColor="#F3EFEF"
             android:textSize="20sp"

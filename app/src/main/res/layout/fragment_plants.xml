@@ -19,14 +19,14 @@
 
     <Button
         android:id="@+id/addPlantButton"
-        android:layout_gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
         android:backgroundTint="#1DD08F"
         android:text="Add Plants"
         android:textSize="12sp"
-        app:cornerRadius="20dp"
-       />
+        app:cornerRadius="20dp" />
 
 
 </LinearLayout>

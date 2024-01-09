@@ -11,7 +11,7 @@
     <View
         android:id="@+id/top_view2"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="60dp"
         android:background="@drawable/bg_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +34,8 @@
     <LinearLayout
         android:id="@+id/LinearLayoutID"
         android:layout_width="0dp"
-        android:layout_height="550dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/addGreenhouseButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,8 +50,9 @@
 
     <Button
         android:id="@+id/addGreenhouseButton"
-        android:layout_width="130dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
         android:layout_weight="1"
         android:backgroundTint="#1DD08F"
         android:text="Add Sensors"
@@ -58,6 +60,5 @@
         app:cornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/LinearLayoutID" />
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
