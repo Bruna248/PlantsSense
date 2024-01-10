@@ -57,7 +57,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
@@ -75,9 +75,21 @@
                     android:id="@+id/fieldCreationDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Field Addition Date"
                     android:textColor="#F3EFEF"
                     android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/editGreenhouseButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="#1DD08F"
+                    android:text="Edit"
+                    android:textSize="12sp"
+                    app:cornerRadius="20dp" />
             </LinearLayout>
         </LinearLayout>
 

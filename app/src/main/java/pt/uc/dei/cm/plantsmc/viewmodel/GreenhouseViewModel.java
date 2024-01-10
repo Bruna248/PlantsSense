@@ -118,4 +118,25 @@ public class GreenhouseViewModel extends ViewModel {
             }
         });
     }
+
+    public void updateGreenhouse(Greenhouse greenhouse) {
+        repository.updateGreenhouse(greenhouse, task -> {
+            if (task.isSuccessful()) {
+                Log.d("Firestore", "Greenhouse updated successfully");
+
+                List<Greenhouse> updatedList = greenhouses.getValue();
+                if (updatedList == null) {
+                    updatedList = new ArrayList<>();
+                }
+                int greenhouseIndex = updatedList.indexOf(greenhouse);
+                updatedList.set(greenhouseIndex, greenhouse);
+                greenhouses.postValue(updatedList);
+            } else {
+                // Handle error
+                Exception e = task.getException();
+                Log.e("Firestore", "Error adding greenhouse", e);
+                Toast.makeText(null, "Error adding greenhouse", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

@@ -81,7 +81,11 @@ public class EditGreenhouseFragment extends Fragment {
                 greenhouseNameEditText.setError("Please enter a name for the greenhouse");
             } else {
                 // Create greenhouse object
-                this.greenhouse = new Greenhouse(greenhouseName);
+                if (this.greenhouse == null) {
+                    this.greenhouse = new Greenhouse(greenhouseName);
+                } else {
+                    this.greenhouse.setName(greenhouseName);
+                }
                 parent.saveGreenhouse(greenhouse);
 
                 // Pop the current fragment

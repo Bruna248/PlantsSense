@@ -37,7 +37,8 @@ public class GreenhouseRepository {
                 if (querySnapshot != null) {
                     for (QueryDocumentSnapshot documentSnapshot : querySnapshot) {
                         Greenhouse greenhouse = new Greenhouse(documentSnapshot.getId(),
-                                documentSnapshot.getString("name"));
+                                documentSnapshot.getString("name"),
+                                documentSnapshot.getString("userId"));
                         greenhouseList.add(greenhouse);
                     }
                 }
@@ -54,6 +55,15 @@ public class GreenhouseRepository {
     }
 
     public void addGreenhouse(Greenhouse greenhouse, OnCompleteListener<DocumentReference> onCompleteListener) {
-        firestore.collection("greenhouses").add(greenhouse).addOnCompleteListener(onCompleteListener);
+        firestore.collection("greenhouses")
+                .add(greenhouse)
+                .addOnCompleteListener(onCompleteListener);
+    }
+
+    public void updateGreenhouse(Greenhouse greenhouse, OnCompleteListener<Void> onCompleteListener) {
+        firestore.collection("greenhouses")
+                .document(greenhouse.getId())
+                .set(greenhouse)
+                .addOnCompleteListener(onCompleteListener);
     }
 }

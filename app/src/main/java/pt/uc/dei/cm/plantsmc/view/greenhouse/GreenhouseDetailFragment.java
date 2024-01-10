@@ -1,5 +1,6 @@
 package pt.uc.dei.cm.plantsmc.view.greenhouse;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.material.imageview.ShapeableImageView;
@@ -23,6 +25,7 @@ import pt.uc.dei.cm.plantsmc.R;
 import pt.uc.dei.cm.plantsmc.model.Greenhouse;
 import pt.uc.dei.cm.plantsmc.model.Plant;
 import pt.uc.dei.cm.plantsmc.view.adapters.DemoCollectionAdapter;
+import pt.uc.dei.cm.plantsmc.view.adapters.GreenhouseHolder;
 import pt.uc.dei.cm.plantsmc.view.adapters.PlantsHolder;
 import pt.uc.dei.cm.plantsmc.view.plant.EditPlantFragment;
 import pt.uc.dei.cm.plantsmc.view.plant.PlantDetailFragment;
@@ -41,9 +44,22 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
     private Greenhouse greenhouse;
     private PlantViewModel plantViewModel;
     private UserViewModel userViewModel;
+    private GreenhouseHolder parent;
 
     DemoCollectionAdapter demoCollectionAdapter;
     ViewPager2 viewPager;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof GreenhouseHolder) {
+            parent = (GreenhouseHolder) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement GreenhouseHolder");
+        }
+    }
+
     // This method is used to create new instances of the fragment with a greenhouse object
     public static GreenhouseDetailFragment newInstance(Greenhouse greenhouse) {
         GreenhouseDetailFragment fragment = new GreenhouseDetailFragment();
@@ -83,6 +99,9 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
             textViewName.setText(greenhouse.getName());
         }
 
+        // Edit greenhouse button
+        setup_edit_greenhouse(view);
+
         ShapeableImageView imageView= view.findViewById(R.id.field_image);
         imageView.setImageResource(R.drawable.field1);
 
@@ -117,12 +136,9 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
 
     @Override
     public void onAddPlant() {
-        if (getChildFragmentManager().getBackStackEntryCount() > 0) {
-            getChildFragmentManager().popBackStack();
-        }
-
         EditPlantFragment editPlantFragment = EditPlantFragment.newInstance(null);
-        getChildFragmentManager().beginTransaction().replace(R.id.plantsFragmentContainer, editPlantFragment)
+        editPlantFragment.setParent(this);
+        getParentFragmentManager().beginTransaction().replace(R.id.greenhousesFragmentContainer, editPlantFragment)
                 .addToBackStack(null)
                 .commit();
     }
@@ -149,6 +165,14 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
                 getChildFragmentManager().beginTransaction().replace(R.id.plantsFragmentContainer, newFragment)
                         .commit();
             }
+        });
+    }
+
+    private void setup_edit_greenhouse(View view) {
+        Button editGreenhouseButton = view.findViewById(R.id.editGreenhouseButton);
+        editGreenhouseButton.setOnClickListener(v -> {
+
+            parent.onEditGreenhouse(greenhouse);
         });
     }
 }
