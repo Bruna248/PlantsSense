@@ -39,10 +39,9 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/field_image_plant_detail"
-                android:layout_width="wrap_content"
-                android:layout_height="150dp"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
                 android:layout_marginEnd="10dp"
-                android:layout_weight="1"
                 android:scaleType="centerCrop"
                 app:shapeAppearanceOverlay="@style/Round10"
                 tools:src="@drawable/field1" />
@@ -58,17 +57,17 @@
                     android:id="@+id/plantNameTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Field Name"
+                    android:text="Plant Name"
                     android:textColor="#F6F0F0"
                     android:textSize="25sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/field"
+                    android:id="@+id/plantGreenhouse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    android:text="Field 1"
+                    android:text="Greenhouse"
                     android:textColor="#F3EFEF"
                     android:textSize="15sp" />
 
@@ -128,6 +127,18 @@
 
         </RelativeLayout>
 
+        <Button
+            android:id="@+id/plant_Notes"
+            android:layout_width="130dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:backgroundTint="#1DD08F"
+            android:text="Edit Plant"
+            android:textSize="12sp"
+            app:cornerRadius="20dp" />
+
         <TextView
             android:id="@+id/Sensors_Description"
             android:layout_width="wrap_content"
@@ -174,6 +185,7 @@
             app:cornerRadius="20dp"
             android:layout_gravity="center"
             />
+
     </LinearLayout>
 
 </ScrollView>
