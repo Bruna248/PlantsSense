@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/green_strong"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/green_strong"
     android:orientation="vertical"
-    android:padding="20dp">
+    android:padding="27dp">
 
     <!-- Top Bar
     <LinearLayout
@@ -35,9 +34,6 @@
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="20dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -50,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:layout_weight="1"
+                android:layout_weight="1.2"
                 android:scaleType="centerCrop"
                 app:shapeAppearanceOverlay="@style/Round10"
                 tools:src="@drawable/field1" />

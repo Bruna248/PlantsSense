@@ -27,7 +27,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp"
-        android:maxHeight="50dp"
+        android:maxHeight="60dp"
         android:text="FieldName"
         android:textAlignment="center"
         android:textSize="20sp" />

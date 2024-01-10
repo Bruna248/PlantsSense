@@ -15,15 +15,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+
+import java.util.Objects;
 
 import pt.uc.dei.cm.plantsmc.R;
 import pt.uc.dei.cm.plantsmc.view.adapters.GreenhouseAdapter;
 import pt.uc.dei.cm.plantsmc.view.adapters.GreenhouseHolder;
 import pt.uc.dei.cm.plantsmc.viewmodel.GreenhouseViewModel;
+import pt.uc.dei.cm.plantsmc.viewmodel.UserViewModel;
 
 public class GreenhousesFragment extends Fragment {
 
-    private GreenhouseViewModel viewModel;
+    private GreenhouseViewModel greenhouseViewModel;
+    private UserViewModel userViewModel;
+
     private GreenhouseHolder parent;
     private GreenhouseAdapter adapter;
 
@@ -45,7 +51,8 @@ public class GreenhousesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(GreenhouseViewModel.class);
+        greenhouseViewModel = new ViewModelProvider(this).get(GreenhouseViewModel.class);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
     }
 
     @Override
@@ -60,14 +67,17 @@ public class GreenhousesFragment extends Fragment {
         // Add greenhouse button
         setup_add_greenhouse(view);
 
+        setup_fragment_title(view);
+
         return view;
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel.getGreenhouses().observe(getViewLifecycleOwner(), greenhouses -> {
+        greenhouseViewModel.getGreenhouses().observe(getViewLifecycleOwner(), greenhouses -> {
             // Update UI with the list of greenhouses
             adapter.setGreenhouses(greenhouses);
             adapter.notifyDataSetChanged();
@@ -80,5 +90,17 @@ public class GreenhousesFragment extends Fragment {
 
             parent.onAddGreenhouse();
         });
+    }
+
+    private void setup_fragment_title(View view) {
+        TextView titleTextView = view.findViewById(R.id.textViewHelloUser);
+
+        String[] parsedEmail = Objects.requireNonNull(userViewModel.getCurrentUser()
+                .getValue())
+                .getEmail()
+                .split("@");
+
+        String title = String.format("Hello, %s!", parsedEmail[0]);
+        titleTextView.setText(title);
     }
 }
