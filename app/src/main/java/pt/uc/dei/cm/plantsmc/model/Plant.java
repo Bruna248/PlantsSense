@@ -9,6 +9,25 @@ public class Plant implements Serializable {
     private String userId;
     private String specie;
 
+    public Plant(String id, String name, String greenhouseId, String userId, String specie, String greenhousename) {
+        this.id = id;
+        this.name = name;
+        this.greenhouseId = greenhouseId;
+        this.userId = userId;
+        this.specie = specie;
+        this.greenhousename=greenhousename;
+    }
+
+    public String getGreenhousename() {
+        return greenhousename;
+    }
+
+    public void setGreenhousename(String greenhousename) {
+        this.greenhousename = greenhousename;
+    }
+
+    private String greenhousename;
+
     public Plant(String id, String name, String greenhouseId, String userId, String specie) {
         this.id = id;
         this.name = name;

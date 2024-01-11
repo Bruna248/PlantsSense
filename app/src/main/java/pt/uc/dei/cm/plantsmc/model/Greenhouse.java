@@ -1,7 +1,6 @@
 package pt.uc.dei.cm.plantsmc.model;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 public class Greenhouse implements Serializable {
     private String id;
@@ -11,12 +10,6 @@ public class Greenhouse implements Serializable {
     public Greenhouse(String id, String name) {
         this.id = id;
         this.name = name;
-    }
-
-    public Greenhouse(String id, String name, String userId) {
-        this.id = id;
-        this.name = name;
-        this.userId = userId;
     }
 
     public Greenhouse(String name) {
@@ -48,18 +41,5 @@ public class Greenhouse implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Greenhouse that = (Greenhouse) o;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

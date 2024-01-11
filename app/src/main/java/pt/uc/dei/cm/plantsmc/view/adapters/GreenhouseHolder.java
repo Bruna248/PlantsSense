@@ -4,7 +4,6 @@ import pt.uc.dei.cm.plantsmc.model.Greenhouse;
 
 public interface GreenhouseHolder {
     void onAddGreenhouse();
-    void onEditGreenhouse(Greenhouse greenhouse);
     void onGreenhouseClick(Greenhouse greenhouse);
 
     void saveGreenhouse(Greenhouse greenhouse);

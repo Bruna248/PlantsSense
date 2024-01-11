@@ -37,8 +37,7 @@ public class GreenhouseRepository {
                 if (querySnapshot != null) {
                     for (QueryDocumentSnapshot documentSnapshot : querySnapshot) {
                         Greenhouse greenhouse = new Greenhouse(documentSnapshot.getId(),
-                                documentSnapshot.getString("name"),
-                                documentSnapshot.getString("userId"));
+                                documentSnapshot.getString("name"));
                         greenhouseList.add(greenhouse);
                     }
                 }

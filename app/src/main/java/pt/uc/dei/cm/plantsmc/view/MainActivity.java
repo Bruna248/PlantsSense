@@ -1,18 +1,17 @@
 package pt.uc.dei.cm.plantsmc.view;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 import pt.uc.dei.cm.plantsmc.R;
 import pt.uc.dei.cm.plantsmc.model.Greenhouse;
+import pt.uc.dei.cm.plantsmc.utils.MQTTUtils;
 import pt.uc.dei.cm.plantsmc.view.adapters.GreenhouseHolder;
 import pt.uc.dei.cm.plantsmc.view.auth.LoginActivity;
 import pt.uc.dei.cm.plantsmc.view.greenhouse.EditGreenhouseFragment;
@@ -40,10 +39,6 @@ public class MainActivity extends AppCompatActivity implements GreenhouseHolder 
         // Set initial data
         init_data();
 
-        // Home button
-        setup_home_button();
-        // Back button
-        setup_back_button();
         // Logout button
         setup_logout();
 
@@ -71,23 +66,6 @@ public class MainActivity extends AppCompatActivity implements GreenhouseHolder 
         userViewModel.setUser(FirebaseAuth.getInstance().getCurrentUser());
     }
 
-
-    private void setup_back_button() {
-        ImageView backButton = findViewById(R.id.backButton);
-
-        backButton.setOnClickListener(v -> {
-            getOnBackPressedDispatcher().onBackPressed();
-        });
-    }
-
-    private void setup_home_button() {
-        ImageView homeButton = findViewById(R.id.homeButton);
-
-        homeButton.setOnClickListener(v -> {
-            getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        });
-    }
-
     private void setup_logout() {
         Button logoutButton = findViewById(R.id.button);
 
@@ -102,21 +80,17 @@ public class MainActivity extends AppCompatActivity implements GreenhouseHolder 
         greenhouseViewModel.setSelectedGreenhouse(greenhouse);
 
         GreenhouseDetailFragment newFragment = GreenhouseDetailFragment.newInstance(greenhouse);
-        getSupportFragmentManager().beginTransaction().replace(R.id.greenhousesFragmentContainer, newFragment)
+        getSupportFragmentManager().beginTransaction().replace(R.id.greenhousesFragmentContainer, newFragment,"GreenhouseDetail")
                 .addToBackStack(null)
                 .commit();
     }
 
     @Override
     public void saveGreenhouse(Greenhouse greenhouse) {
+        greenhouse.setUserId(userViewModel.getCurrentUser().getValue().getUid());
 
-        if (!greenhouse.getId().isEmpty() && !greenhouse.getUserId().isEmpty()) {
-            greenhouseViewModel.updateGreenhouse(greenhouse);
-        } else {
-            greenhouse.setUserId(userViewModel.getCurrentUser().getValue().getUid());
-
-            greenhouseViewModel.addGreenhouse(greenhouse);
-        }
+        String currentID=userViewModel.getCurrentUser().getValue().getUid();
+        greenhouseViewModel.addGreenhouse(greenhouse);
 
         greenhouseViewModel.getGreenhouses().observe(this, greenhouses -> {
             if (greenhouses != null) {
@@ -139,18 +113,4 @@ public class MainActivity extends AppCompatActivity implements GreenhouseHolder 
                 .addToBackStack(null)
                 .commit();
     }
-
-    @Override
-    public void onEditGreenhouse(Greenhouse greenhouse) {
-        // Check if there are any Fragments
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            getSupportFragmentManager().popBackStack();
-        }
-
-        EditGreenhouseFragment newFragment = EditGreenhouseFragment.newInstance(greenhouse);
-        getSupportFragmentManager().beginTransaction().replace(R.id.greenhousesFragmentContainer, newFragment)
-                .addToBackStack(null)
-                .commit();
-    }
 }
-

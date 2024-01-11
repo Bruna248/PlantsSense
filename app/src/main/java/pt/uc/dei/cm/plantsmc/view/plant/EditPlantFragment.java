@@ -1,5 +1,6 @@
 package pt.uc.dei.cm.plantsmc.view.plant;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import pt.uc.dei.cm.plantsmc.R;
 import pt.uc.dei.cm.plantsmc.model.Plant;
+import pt.uc.dei.cm.plantsmc.view.adapters.GreenhouseHolder;
 import pt.uc.dei.cm.plantsmc.view.adapters.PlantsHolder;
 import pt.uc.dei.cm.plantsmc.viewmodel.UserViewModel;
 
@@ -33,6 +35,25 @@ public class EditPlantFragment extends Fragment {
 
     public EditPlantFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        /*assert getParentFragment() != null;
+        Fragment parentFragment=getParentFragment();*/
+
+        assert getActivity().getSupportFragmentManager().findFragmentByTag("GreenhouseDetail")!=null;
+        Fragment parentFragment = getActivity().getSupportFragmentManager().findFragmentByTag("GreenhouseDetail");
+
+
+        if (parentFragment instanceof PlantsHolder) {
+            parent = (PlantsHolder) parentFragment;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement PlantsHolder");
+        }
     }
 
     public static EditPlantFragment newInstance(@Nullable Plant plant) {
@@ -97,9 +118,5 @@ public class EditPlantFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_plant, container, false);
-    }
-
-    public void setParent(PlantsHolder parent) {
-        this.parent = parent;
     }
 }

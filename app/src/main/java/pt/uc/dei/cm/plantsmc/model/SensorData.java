@@ -1,8 +1,9 @@
 package pt.uc.dei.cm.plantsmc.model;
 
-public class SensorData {
-    private int id;
+import java.io.Serializable;
 
+public class SensorData implements Serializable {
+    private String id;
     private Double temperature;
     private Double humidity;
     private boolean light;
@@ -13,7 +14,7 @@ public class SensorData {
     public SensorData() {
     }
 
-    public SensorData(int id, Double temperature, Double humidity, String parentId, String parentType, String timestamp) {
+    public SensorData(String id,Double temperature, Double humidity, String parentId, String parentType, String timestamp) {
         this.id = id;
         this.temperature = temperature;
         this.humidity = humidity;
@@ -22,11 +23,22 @@ public class SensorData {
         this.timestamp = timestamp;
     }
 
-    public int getId() {
+    public SensorData(String id, String parentId, String parentType, String timestamp) {
+        this.id = id;
+        this.parentId = parentId;
+        this.parentType = parentType;
+        this.timestamp = timestamp;
+    }
+
+    public SensorData(String sensorName) {
+        this.parentType=sensorName;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

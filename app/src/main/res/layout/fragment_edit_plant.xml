@@ -32,49 +32,55 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_margin="20dp"
         android:isScrollContainer="true"
         android:orientation="vertical"
-        android:persistentDrawingCache="scrolling"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_view4"
         tools:context=".view.greenhouse.EditPlantFragment">
 
         <TextView
-            android:id="@+id/textView19"
+            android:id="@+id/textView14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Image"
+            android:layout_marginTop="12dp"
+            android:text="Description"
             android:textColor="#000000"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/top_view9" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
+        <View
+            android:id="@+id/top_view5"
+            android:layout_width="0dp"
+            android:layout_height="250dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/sensor_rectangle"
-            app:cardCornerRadius="45dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView19"
-            tools:ignore="MissingConstraints">
+            app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
-            <ImageView
-                android:id="@+id/imageViewPlant"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:scaleType="centerCrop"
-                android:src="@android:drawable/ic_input_add" />
-
-        </androidx.cardview.widget.CardView>
+        <EditText
+            android:id="@+id/editDescriptionPlant"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="23dp"
+            android:layout_marginVertical="3dp"
+            android:ems="10"
+            android:gravity="start|top"
+            android:inputType="textMultiLine"
+            android:maxHeight="235dp"
+            app:layout_constraintEnd_toEndOf="@+id/top_view5"
+            app:layout_constraintStart_toStartOf="@+id/top_view5"
+            app:layout_constraintTop_toTopOf="@+id/top_view5" />
 
         <View
             android:id="@+id/top_view8"
@@ -113,6 +119,17 @@
             app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
         <TextView
+            android:id="@+id/textView19"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Image"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
             android:id="@+id/textView18"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -148,62 +165,56 @@
             app:layout_constraintTop_toTopOf="@+id/top_view9" />
 
 
-        <Button
-            android:id="@+id/savePlantButton"
-            android:layout_width="130dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="24dp"
-            android:layout_weight="1"
-            android:backgroundTint="#1DD08F"
-            android:text="Save"
-            android:textSize="12sp"
-            app:cornerRadius="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardView3" />
-
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView3"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:layout_marginStart="8dp"
+            android:id="@+id/cardView"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:isScrollContainer="true"
-            app:cardBackgroundColor="#EDEDED"
+            android:background="@drawable/sensor_rectangle"
             app:cardCornerRadius="45dp"
-            app:layout_constraintBottom_toTopOf="@+id/savePlantButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView14">
+            app:layout_constraintTop_toBottomOf="@+id/textView19"
+            tools:ignore="MissingConstraints">
 
-            <EditText
-                android:id="@+id/editDescriptionPlant"
+            <ImageView
+                android:id="@+id/imageViewPlant"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="23dp"
-                android:layout_marginVertical="3dp"
-                android:layout_marginTop="3dp"
-                android:ems="10"
-                android:gravity="start|top"
-                android:inputType="textMultiLine" />
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_input_add" />
+
+            <!--
+            <Button
+                android:id="@+id/savePlantButton"
+                android:layout_width="130dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="32dp"
+                android:layout_weight="1"
+                android:backgroundTint="#1DD08F"
+                android:text="Save"
+                android:textSize="12sp"
+                app:cornerRadius="20dp" /> -->
+
         </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/textView14"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Description"
-            android:textColor="#000000"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/top_view9" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id="@+id/savePlantButton"
+        android:layout_width="130dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="32dp"
+        android:layout_weight="1"
+        android:backgroundTint="#1DD08F"
+        android:text="Save"
+        android:textSize="12sp"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
