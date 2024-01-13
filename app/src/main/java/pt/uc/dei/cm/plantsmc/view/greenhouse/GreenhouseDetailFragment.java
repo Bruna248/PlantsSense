@@ -114,6 +114,7 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
                         handleGalleryResult(result.getData());
                     }
                 });
+
     }
 
     @Override
@@ -153,7 +154,6 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
         mapView = view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
-
 
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
 
@@ -246,15 +246,12 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
         if (greenhouse.getLatitude() != null && greenhouse.getLongitude() != null) {
             mapView.setVisibility(View.VISIBLE);
-            double latitude = greenhouse.getLatitude();
-            double longitude = greenhouse.getLongitude();
-            Log.d("COORD", ""+latitude+" "+longitude);
-            LatLng location = new LatLng(latitude, longitude);
+            Log.d("COORD", ""+greenhouse.getLatitude()+" "+greenhouse.getLongitude());
+            LatLng location = new LatLng(greenhouse.getLatitude(), greenhouse.getLongitude());
             googleMap.addMarker(new MarkerOptions().position(location).title(greenhouse.getName()));
-            //LatLng location = new LatLng(40.2115,-8.4292);
-            //googleMap.addMarker(new MarkerOptions().position(location).title("Marker Title"));
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f));
         } else {
             mapView.setVisibility(View.GONE);
@@ -271,14 +268,38 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        mapView.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mapView.onStop();
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         mapView.onPause();
     }
 
     @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
     }
 }
