@@ -9,6 +9,7 @@ public class Greenhouse implements Serializable {
     private String userId;
     private Double latitude;
     private Double longitude;
+    private String imageURL;
 
     public Greenhouse(String id, String name) {
         this.id = id;
@@ -33,6 +34,15 @@ public class Greenhouse implements Serializable {
         this.userId = userId;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public Greenhouse(String id, String name, String userId, Double latitude, Double longitude, String imageURL) {
+        this.id = id;
+        this.name = name;
+        this.userId = userId;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.imageURL = imageURL;
     }
 
     public Greenhouse(String name) {
@@ -80,6 +90,14 @@ public class Greenhouse implements Serializable {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
     @Override

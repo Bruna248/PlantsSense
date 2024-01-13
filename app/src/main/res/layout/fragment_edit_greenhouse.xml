@@ -80,7 +80,7 @@
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardView" />
+            app:layout_constraintTop_toBottomOf="@+id/field_image" />
 
         <TextView
             android:id="@+id/textView19"
@@ -129,27 +129,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/top_view9" />
 
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/field_image"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/sensor_rectangle"
-            app:cardCornerRadius="45dp"
+            android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView19"
-            tools:ignore="MissingConstraints">
-
-            <ImageView
-                android:id="@+id/imageViewField"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:scaleType="centerCrop"
-                android:src="@android:drawable/ic_input_add" />
-        </androidx.cardview.widget.CardView>
+            app:shapeAppearanceOverlay="@style/Round10"
+            tools:src="@drawable/field1" />
 
         <Button
             android:id="@+id/saveGreenhouseButton"

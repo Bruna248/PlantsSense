@@ -26,13 +26,9 @@ import java.util.UUID;
 public class GreenhouseRepository {
 
     private FirebaseFirestore firestore;
-    private FirebaseStorage storage;
-    private StorageReference storageReference;
 
     public GreenhouseRepository() {
         firestore = FirebaseFirestore.getInstance();
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
     }
 
     public MutableLiveData<List<Greenhouse>> getGreenhouses() {
@@ -78,29 +74,5 @@ public class GreenhouseRepository {
                 .document(greenhouse.getId())
                 .set(greenhouse)
                 .addOnCompleteListener(onCompleteListener);
-    }
-
-    public void addGalleryPhoto(Uri imageUri, Greenhouse greenhouse, OnCompleteListener<UploadTask.TaskSnapshot> onCompleteListener) {
-        final String randomKey = UUID.randomUUID().toString();
-        StorageReference sRef = storageReference.child("images/" + randomKey);
-        sRef.putFile(imageUri)
-            .addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    sRef.getDownloadUrl()
-                        .addOnSuccessListener(uri -> {
-                            String downloadUrl = uri.toString();
-                            Map<String, Object> data = new HashMap<>();
-                            data.put("downloadUrl", downloadUrl);
-                            data.put("greenhouseID", greenhouse.getId());
-                            firestore.collection("images").add(data);
-                        })
-                        .addOnFailureListener(e -> {
-                            // ?
-                        });
-                    onCompleteListener.onComplete(task);
-                } else {
-                    onCompleteListener.onComplete(task);
-                }
-            });
     }
 }

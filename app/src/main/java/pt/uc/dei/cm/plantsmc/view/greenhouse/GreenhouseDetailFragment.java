@@ -13,6 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Handler;
@@ -37,6 +40,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import pt.uc.dei.cm.plantsmc.R;
 import pt.uc.dei.cm.plantsmc.model.Greenhouse;
@@ -47,12 +51,17 @@ import pt.uc.dei.cm.plantsmc.view.adapters.SwipeViewAdapter;
 import pt.uc.dei.cm.plantsmc.view.adapters.GreenhouseViewHolder;
 import pt.uc.dei.cm.plantsmc.view.adapters.PlantsViewHolder;
 import pt.uc.dei.cm.plantsmc.view.adapters.SensorsViewHolder;
+import pt.uc.dei.cm.plantsmc.view.adapters.GalleryAdapter;
+import pt.uc.dei.cm.plantsmc.view.adapters.GreenhouseAdapter;
+import pt.uc.dei.cm.plantsmc.view.adapters.GreenhouseHolder;
+import pt.uc.dei.cm.plantsmc.view.adapters.PlantsHolder;
 import pt.uc.dei.cm.plantsmc.view.plant.EditPlantFragment;
 import pt.uc.dei.cm.plantsmc.view.plant.PlantDetailFragment;
 import pt.uc.dei.cm.plantsmc.view.plant.PlantsFragment;
 import pt.uc.dei.cm.plantsmc.viewmodel.GreenhouseViewModel;
 import pt.uc.dei.cm.plantsmc.view.sensors.SensorDetailFragment;
 import pt.uc.dei.cm.plantsmc.viewmodel.GreenhouseViewModel;
+import pt.uc.dei.cm.plantsmc.viewmodel.ImageViewModel;
 import pt.uc.dei.cm.plantsmc.viewmodel.PlantViewModel;
 import pt.uc.dei.cm.plantsmc.viewmodel.UserViewModel;
 
@@ -68,6 +77,7 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
 
     private GreenhouseViewModel greenhouseViewModel;
     private PlantViewModel plantViewModel;
+    private ImageViewModel imageViewModel;
     private UserViewModel userViewModel;
     private ActivityResultLauncher<Intent> galleryLauncher;
 
@@ -76,6 +86,7 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
     SwipeViewAdapter swipeViewAdapter;
     ViewPager2 viewPager;
     MapView mapView;
+    GalleryAdapter galleryAdapter;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -106,7 +117,10 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
 
         greenhouseViewModel = new ViewModelProvider(this).get(GreenhouseViewModel.class);
         plantViewModel = new ViewModelProvider(this).get(PlantViewModel.class);
+        imageViewModel = new ViewModelProvider(this).get(ImageViewModel.class);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+
+        imageViewModel.setImagesByGreenhouse(greenhouse.getId());
 
         galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -129,6 +143,12 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
             textViewName.setText(greenhouse.getName());
         }
 
+        RecyclerView galleryRecyclerView = view.findViewById(R.id.galleryRecyclerView);
+        galleryRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2, LinearLayoutManager.VERTICAL,false));
+        galleryAdapter = new GalleryAdapter(new ArrayList<>());
+        galleryRecyclerView.setAdapter(galleryAdapter);
+
+        // Edit greenhouse button
         setup_edit_greenhouse(view);
 
 
@@ -170,6 +190,12 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
                     }
                 }
         ).attach();
+
+        imageViewModel.getImagesByGreenhouse().observe(getViewLifecycleOwner(), images -> {
+            // Update UI with the list of greenhouses
+            galleryAdapter.setImages(images);
+            galleryAdapter.notifyDataSetChanged();
+        });
     }
 
     private void openGallery() {
@@ -180,7 +206,15 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
     private void handleGalleryResult(Intent data) {
         Uri selectedImageUri = data.getData();
         if (selectedImageUri != null) {
-            greenhouseViewModel.addGalleryPhoto(selectedImageUri, greenhouse);
+            imageViewModel.addGalleryPhoto(selectedImageUri, greenhouse);
+
+            imageViewModel.getImagesByGreenhouse().observe(this, images -> {
+                if (images != null) {
+                    galleryAdapter.setImages(images);
+                    galleryAdapter.notifyDataSetChanged();
+                    //parent.onEditGreenhouse(greenhouse);
+                }
+            });
         }
     }
 
