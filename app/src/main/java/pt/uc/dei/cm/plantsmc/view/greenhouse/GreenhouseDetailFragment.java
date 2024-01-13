@@ -1,22 +1,38 @@
 package pt.uc.dei.cm.plantsmc.view.greenhouse;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 
 import pt.uc.dei.cm.plantsmc.R;
@@ -27,6 +43,7 @@ import pt.uc.dei.cm.plantsmc.view.adapters.PlantsHolder;
 import pt.uc.dei.cm.plantsmc.view.plant.EditPlantFragment;
 import pt.uc.dei.cm.plantsmc.view.plant.PlantDetailFragment;
 import pt.uc.dei.cm.plantsmc.view.plant.PlantsFragment;
+import pt.uc.dei.cm.plantsmc.viewmodel.GreenhouseViewModel;
 import pt.uc.dei.cm.plantsmc.viewmodel.PlantViewModel;
 import pt.uc.dei.cm.plantsmc.viewmodel.UserViewModel;
 
@@ -35,15 +52,20 @@ import pt.uc.dei.cm.plantsmc.viewmodel.UserViewModel;
  * Use the {@link GreenhouseDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
+public class GreenhouseDetailFragment extends Fragment implements PlantsHolder, OnMapReadyCallback {
 
     private static final String ARG_GREENHOUSE = "arg_greenhouse";
     private Greenhouse greenhouse;
+
+    private GreenhouseViewModel greenhouseViewModel;
     private PlantViewModel plantViewModel;
     private UserViewModel userViewModel;
+    private ActivityResultLauncher<Intent> galleryLauncher;
 
     DemoCollectionAdapter demoCollectionAdapter;
     ViewPager2 viewPager;
+
+
     // This method is used to create new instances of the fragment with a greenhouse object
     public static GreenhouseDetailFragment newInstance(Greenhouse greenhouse) {
         GreenhouseDetailFragment fragment = new GreenhouseDetailFragment();
@@ -60,6 +82,7 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
             greenhouse = (Greenhouse) getArguments().getSerializable(ARG_GREENHOUSE);
         }
 
+        greenhouseViewModel = new ViewModelProvider(this).get(GreenhouseViewModel.class);
         plantViewModel = new ViewModelProvider(this).get(PlantViewModel.class);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
@@ -69,6 +92,13 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
             getChildFragmentManager().beginTransaction().replace(R.id.plantsFragmentContainer, plantsFragment)
                     .commit();
         }*/
+
+        galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        handleGalleryResult(result.getData());
+                    }
+                });
     }
 
     @Override
@@ -85,6 +115,13 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
 
         ShapeableImageView imageView= view.findViewById(R.id.field_image);
         imageView.setImageResource(R.drawable.field1);
+
+        MapView mapView = view.findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
+
+        Button addPhotoButton = view.findViewById(R.id.addPhotoButton);
+        addPhotoButton.setOnClickListener(v -> openGallery());
 
         return view;
     }
@@ -113,6 +150,21 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
                 }
         ).attach();
     }
+
+    private void openGallery() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        galleryLauncher.launch(galleryIntent);
+    }
+
+    private void handleGalleryResult(Intent data) {
+        Uri selectedImageUri = data.getData();
+        if (selectedImageUri != null) {
+            greenhouseViewModel.addGalleryPhoto(selectedImageUri);
+        }
+    }
+
+
+
 
 
     @Override
@@ -150,5 +202,16 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
                         .commit();
             }
         });
+    }
+
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        // Set up a marker at a specific location
+        LatLng location = new LatLng(37.7749, -122.4194); // Example: San Francisco, CA
+        googleMap.addMarker(new MarkerOptions().position(location).title("Marker Title"));
+
+        // Move camera to the marker location and set an appropriate zoom level
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f));
     }
 }
