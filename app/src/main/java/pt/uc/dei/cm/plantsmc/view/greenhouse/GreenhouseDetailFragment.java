@@ -145,6 +145,7 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
 
     @Override
     public void onPlantClick(Plant plant) {
+        plant.setGreenhousename(greenhouse.getName());
         PlantDetailFragment plantDetailFragment = PlantDetailFragment.newInstance(plant);
         getParentFragmentManager().beginTransaction().replace(R.id.greenhousesFragmentContainer, plantDetailFragment, "plant_selected_fragment")
                 .addToBackStack(null)
