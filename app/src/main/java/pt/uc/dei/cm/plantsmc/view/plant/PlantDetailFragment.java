@@ -4,40 +4,33 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.imageview.ShapeableImageView;
-
-import org.w3c.dom.Text;
 
 import java.io.Serializable;
 
 import pt.uc.dei.cm.plantsmc.R;
-import pt.uc.dei.cm.plantsmc.model.Greenhouse;
 import pt.uc.dei.cm.plantsmc.model.Plant;
-import pt.uc.dei.cm.plantsmc.view.greenhouse.GreenhouseDetailFragment;
-import pt.uc.dei.cm.plantsmc.viewmodel.PlantViewModel;
+import pt.uc.dei.cm.plantsmc.model.SensorHolderType;
+import pt.uc.dei.cm.plantsmc.model.SensorType;
+import pt.uc.dei.cm.plantsmc.view.adapters.SensorsViewHolder;
+import pt.uc.dei.cm.plantsmc.view.sensors.SensorDetailFragment;
+import pt.uc.dei.cm.plantsmc.view.sensors.SensorsFragment;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link PlantDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PlantDetailFragment extends Fragment {
+public class PlantDetailFragment extends Fragment implements SensorsViewHolder {
 
     private static final String ARG_PLANT = "arg_plant";
     private Plant plant;
-
-    private PlantViewModel plantViewModel;
-    private View temperatureView;
-    private View humidityView;
 
     public PlantDetailFragment() {
         // Required empty public constructor
@@ -55,8 +48,6 @@ public class PlantDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Initialize your PlantViewModel
-        plantViewModel = new ViewModelProvider(requireActivity()).get(PlantViewModel.class);
-
         if (getArguments() != null) {
             plant = (Plant) getArguments().getSerializable(ARG_PLANT);
         }
@@ -71,33 +62,18 @@ public class PlantDetailFragment extends Fragment {
         TextView plantNameTextView = view.findViewById(R.id.plantNameTextView);
         plantNameTextView.setText(plant.getName());
 
+        TextView plantFieldTextView = view.findViewById(R.id.fieldTextView);
+        plantFieldTextView.setText(plant.getGreenhousename());
+
+        TextView plantSpecieTextView = view.findViewById(R.id.specieTextView);
+        plantSpecieTextView.setText(plant.getSpecie());
+
         ShapeableImageView imageView=view.findViewById(R.id.field_image_plant_detail);
         imageView.setImageResource(R.drawable.field1);
 
-        /*TextView plantIdTextView = view.findViewById(R.id.plantIdTextView);
-        plantIdTextView.setText("@" + plant.getId());
-
-        TextView specieNameTextView = view.findViewById(R.id.specieNameTextView);
-        specieNameTextView.setText("Specie - " + plant.getSpecie());
-
-        LinearLayout sensorContainer = view.findViewById(R.id.sensorContainerLayout);
-
-        // Initialize temperature and humidity views
-        temperatureView = createSensorView("Temperature", "--", false);
-        humidityView = createSensorView("Humidity", "--", false);
-
-        sensorContainer.addView(temperatureView);
-        sensorContainer.addView(humidityView);
-*/
-        plantViewModel.getTemperatureDataForPlant(plant.getId()).observe(getViewLifecycleOwner(), temperature -> {
-            //TextView temperatureSensorDataTextView = temperatureView.findViewById(R.id.sensorValueTextView);
-            //temperatureSensorDataTextView.setText(String.format("%s º", temperature));
-        });
-
-        plantViewModel.getHumidityDataForPlant(plant.getId()).observe(getViewLifecycleOwner(), humidity -> {
-            //TextView humiditySensorDataTextView = humidityView.findViewById(R.id.sensorValueTextView);
-            //humiditySensorDataTextView.setText(String.format("%s %%", humidity));
-        });
+        SensorsFragment sensorsFragment = SensorsFragment.newInstance(plant.getId(), SensorHolderType.PLANT);
+        getChildFragmentManager().beginTransaction().replace(R.id.sensorFragmentContainerView, sensorsFragment)
+                .commit();
 
         return view;
     }
@@ -107,22 +83,11 @@ public class PlantDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    private View createSensorView(String sensorName, String sensorValue, boolean isActuator) {
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        LinearLayout sensorLayout = (LinearLayout) inflater.inflate(R.layout.sensor_item, null);
-
-        TextView sensorNameTextView = sensorLayout.findViewById(R.id.sensorNameTextView);
-        sensorNameTextView.setText(sensorName);
-
-        TextView sensorValueTextView = sensorLayout.findViewById(R.id.sensorValueTextView);
-        sensorValueTextView.setText(sensorValue);
-
-        SwitchCompat actuatorSwitch = sensorLayout.findViewById(R.id.actuatorSwitch);
-        if (isActuator) {
-            actuatorSwitch.setVisibility(View.VISIBLE);
-            // set up actuator switch if needed
-        }
-
-        return sensorLayout;
+    @Override
+    public void onSensorClick(String parentId, SensorType sensorType) {
+        SensorDetailFragment sensorPDetailFragment = SensorDetailFragment.newInstance(parentId, SensorHolderType.PLANT, sensorType);
+        getParentFragmentManager().beginTransaction().replace(R.id.greenhousesFragmentContainer, sensorPDetailFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

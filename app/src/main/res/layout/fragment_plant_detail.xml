@@ -39,9 +39,10 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/field_image_plant_detail"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
+                android:layout_width="wrap_content"
+                android:layout_height="150dp"
                 android:layout_marginEnd="10dp"
+                android:layout_weight="1"
                 android:scaleType="centerCrop"
                 app:shapeAppearanceOverlay="@style/Round10"
                 tools:src="@drawable/field1" />
@@ -57,36 +58,57 @@
                     android:id="@+id/plantNameTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Plant Name"
+                    android:text="Field Name"
                     android:textColor="#F6F0F0"
                     android:textSize="25sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/plantGreenhouse"
+                    android:id="@+id/fieldTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginBottom="4dp"
                     android:text="Greenhouse"
                     android:textColor="#F3EFEF"
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/fieldCreationDate"
+                    android:id="@+id/specieTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Added Date"
-                    android:textColor="#F3EFEF"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/CreationDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Date"
+                    android:layout_marginBottom="12dp"
+                    android:text="Specie"
                     android:textColor="#F3EFEF"
                     android:textSize="15sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/editPlantButton"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="4dp"
+                        android:backgroundTint="#1DD08F"
+                        android:text="Edit"
+                        android:textSize="12sp"
+                        app:cornerRadius="20dp" />
+
+                    <Button
+                        android:id="@+id/deletePlantButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="4dp"
+                        android:backgroundTint="#1DD08F"
+                        android:text="Delete"
+                        android:textSize="12sp"
+                        app:cornerRadius="20dp" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
@@ -101,44 +123,31 @@
             android:textColor="#F3EFEF"
             android:textSize="20sp"
             android:textStyle="bold" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView3"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:isScrollContainer="true"
-            app:cardBackgroundColor="#EDEDED"
-            app:cardCornerRadius="45dp"
-            app:layout_constraintBottom_toTopOf="@+id/savePlantButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView14">
+            android:layout_height="wrap_content">
+
+            <View
+                android:id="@+id/top_view111"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="8dp"
+                android:background="@drawable/sensor_rectangle" />
 
             <EditText
-                android:id="@+id/textDescriptionPlant"
+                android:id="@+id/editDescriptionPlant"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginHorizontal="23dp"
                 android:layout_marginVertical="3dp"
-                android:layout_marginTop="3dp"
                 android:ems="10"
                 android:gravity="start|top"
-                android:inputType="textMultiLine" />
-        </androidx.cardview.widget.CardView>
+                android:inputType="textMultiLine"
+                android:maxHeight="235dp" />
 
-        <Button
-            android:id="@+id/plant_Notes"
-            android:layout_width="130dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_weight="1"
-            android:backgroundTint="#1DD08F"
-            android:text="Edit Plant"
-            android:textSize="12sp"
-            app:cornerRadius="20dp" />
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/Sensors_Description"
@@ -155,37 +164,14 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_margin="20dp"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/photoRecyclerView"
+-->
+        <!-- Create a Fragment Container View -->
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/sensorFragmentContainerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="2" /> -->
-        <Button
-            android:id="@+id/addGreenhouseButton"
-            android:layout_width="130dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:backgroundTint="#1DD08F"
-            android:text="Add Sensor"
-            android:textSize="12sp"
-            app:cornerRadius="20dp"
-            android:layout_gravity="center"
-/>
-
-        <Button
-            android:id="@+id/Plant_Notes"
-            android:layout_width="130dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:backgroundTint="#1DD08F"
-            android:text="Plant Notes"
-            android:textSize="12sp"
-            app:cornerRadius="20dp"
-            android:layout_gravity="center"
-            />
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginBottom="20dp" />
 
     </LinearLayout>
 

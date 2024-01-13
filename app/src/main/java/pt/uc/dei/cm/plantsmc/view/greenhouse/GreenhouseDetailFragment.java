@@ -24,12 +24,16 @@ import java.io.Serializable;
 import pt.uc.dei.cm.plantsmc.R;
 import pt.uc.dei.cm.plantsmc.model.Greenhouse;
 import pt.uc.dei.cm.plantsmc.model.Plant;
-import pt.uc.dei.cm.plantsmc.view.adapters.DemoCollectionAdapter;
-import pt.uc.dei.cm.plantsmc.view.adapters.GreenhouseHolder;
-import pt.uc.dei.cm.plantsmc.view.adapters.PlantsHolder;
+import pt.uc.dei.cm.plantsmc.model.SensorHolderType;
+import pt.uc.dei.cm.plantsmc.model.SensorType;
+import pt.uc.dei.cm.plantsmc.view.adapters.SwipeViewAdapter;
+import pt.uc.dei.cm.plantsmc.view.adapters.GreenhouseViewHolder;
+import pt.uc.dei.cm.plantsmc.view.adapters.PlantsViewHolder;
+import pt.uc.dei.cm.plantsmc.view.adapters.SensorsViewHolder;
 import pt.uc.dei.cm.plantsmc.view.plant.EditPlantFragment;
 import pt.uc.dei.cm.plantsmc.view.plant.PlantDetailFragment;
-import pt.uc.dei.cm.plantsmc.view.plant.PlantsFragment;
+import pt.uc.dei.cm.plantsmc.view.sensors.SensorDetailFragment;
+import pt.uc.dei.cm.plantsmc.viewmodel.GreenhouseViewModel;
 import pt.uc.dei.cm.plantsmc.viewmodel.PlantViewModel;
 import pt.uc.dei.cm.plantsmc.viewmodel.UserViewModel;
 
@@ -38,28 +42,27 @@ import pt.uc.dei.cm.plantsmc.viewmodel.UserViewModel;
  * Use the {@link GreenhouseDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
+public class GreenhouseDetailFragment extends Fragment implements PlantsViewHolder, SensorsViewHolder {
 
     private static final String ARG_GREENHOUSE = "arg_greenhouse";
     private Greenhouse greenhouse;
     private PlantViewModel plantViewModel;
     private UserViewModel userViewModel;
-    private GreenhouseHolder parent;
 
-    DemoCollectionAdapter demoCollectionAdapter;
+    private GreenhouseViewModel greenhouseViewModel;
+    private GreenhouseViewHolder parent;
+    SwipeViewAdapter swipeViewAdapter;
     ViewPager2 viewPager;
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof GreenhouseHolder) {
-            parent = (GreenhouseHolder) context;
+        if (context instanceof GreenhouseViewHolder) {
+            parent = (GreenhouseViewHolder) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement GreenhouseHolder");
         }
     }
-
     // This method is used to create new instances of the fragment with a greenhouse object
     public static GreenhouseDetailFragment newInstance(Greenhouse greenhouse) {
         GreenhouseDetailFragment fragment = new GreenhouseDetailFragment();
@@ -78,13 +81,7 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
 
         plantViewModel = new ViewModelProvider(this).get(PlantViewModel.class);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-
-        // Set up the default fragment
-        /*if (savedInstanceState == null) {
-            PlantsFragment plantsFragment = PlantsFragment.newInstance(greenhouse.getId());
-            getChildFragmentManager().beginTransaction().replace(R.id.plantsFragmentContainer, plantsFragment)
-                    .commit();
-        }*/
+        greenhouseViewModel = new ViewModelProvider(this).get(GreenhouseViewModel.class);
     }
 
     @Override
@@ -99,10 +96,10 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
             textViewName.setText(greenhouse.getName());
         }
 
-        // Edit greenhouse button
         setup_edit_greenhouse(view);
 
-        ShapeableImageView imageView= view.findViewById(R.id.field_image);
+
+        ShapeableImageView imageView = view.findViewById(R.id.field_image);
         imageView.setImageResource(R.drawable.field1);
 
         return view;
@@ -112,18 +109,20 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        demoCollectionAdapter = new DemoCollectionAdapter(this,greenhouse.getId());
+        swipeViewAdapter = new SwipeViewAdapter(this, greenhouse.getId());
         viewPager = view.findViewById(R.id.pager);
-        viewPager.setAdapter(demoCollectionAdapter);
+        viewPager.setAdapter(swipeViewAdapter);
+        viewPager.setOffscreenPageLimit(2);
+
 
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
 
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> {
-                    if (position ==0) {
+                    if (position == 0) {
                         // Use the existing tabs from the XML layout
                         tab.setText("Sensors");
-                    } else if (position==1) {
+                    } else if (position == 1) {
                         tab.setText("Plants");
                     } else {
                         // Generate tabs for positions beyond the existing tabs
@@ -138,6 +137,7 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
     public void onAddPlant() {
         EditPlantFragment editPlantFragment = EditPlantFragment.newInstance(null);
         editPlantFragment.setParent(this);
+
         getParentFragmentManager().beginTransaction().replace(R.id.greenhousesFragmentContainer, editPlantFragment)
                 .addToBackStack(null)
                 .commit();
@@ -146,7 +146,15 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
     @Override
     public void onPlantClick(Plant plant) {
         PlantDetailFragment plantDetailFragment = PlantDetailFragment.newInstance(plant);
-        getParentFragmentManager().beginTransaction().replace(R.id.greenhousesFragmentContainer, plantDetailFragment)
+        getParentFragmentManager().beginTransaction().replace(R.id.greenhousesFragmentContainer, plantDetailFragment, "plant_selected_fragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onSensorClick(String parentId, SensorType sensorType) {
+        SensorDetailFragment sensorDetailFragment = SensorDetailFragment.newInstance(parentId, SensorHolderType.GREENHOUSE, sensorType);
+        getParentFragmentManager().beginTransaction().replace(R.id.greenhousesFragmentContainer, sensorDetailFragment)
                 .addToBackStack(null)
                 .commit();
     }
@@ -156,15 +164,20 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
 
         plant.setGreenhouseId(greenhouse.getId());
         plant.setUserId(userViewModel.getCurrentUser().getValue().getUid());
+        plant.setGreenhousename(greenhouse.getName());
 
         plantViewModel.addPlant(plant);
 
         plantViewModel.getPlantsByGreenhouse().observe(this, plants -> {
             if (plants != null) {
-                PlantsFragment newFragment = PlantsFragment.newInstance(greenhouse.getId());
-                getChildFragmentManager().beginTransaction().replace(R.id.plantsFragmentContainer, newFragment)
+                GreenhouseDetailFragment newFragment = GreenhouseDetailFragment.newInstance(greenhouse);
+
+                //PlantsFragment newFragment = PlantsFragment.newInstance(greenhouse.getId());
+                getParentFragmentManager().beginTransaction().replace(R.id.greenhousesFragmentContainer, newFragment)
                         .commit();
             }
+
+
         });
     }
 
@@ -173,6 +186,7 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsHolder {
         editGreenhouseButton.setOnClickListener(v -> {
 
             parent.onEditGreenhouse(greenhouse);
+
         });
     }
 }

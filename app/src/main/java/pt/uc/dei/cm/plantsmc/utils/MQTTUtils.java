@@ -1,17 +1,20 @@
 package pt.uc.dei.cm.plantsmc.utils;
 
+import android.content.Context;
+import android.util.Log;
+
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
-import android.content.Context;
-import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
+import pt.uc.dei.cm.plantsmc.model.SensorData;
+import pt.uc.dei.cm.plantsmc.model.SensorHolderType;
 import pt.uc.dei.cm.plantsmc.viewmodel.GreenhouseViewModel;
 import pt.uc.dei.cm.plantsmc.viewmodel.PlantViewModel;
 
@@ -64,20 +67,51 @@ public class MQTTUtils {
                     // Parse the topic to determine if it's a greenhouse or plant message
                     String[] topicLevels = publish.getTopic().getLevels().toArray(new String[0]);
 
-                    if (topicLevels.length < 3){
+                    if (topicLevels.length < 2) {
                         return;
                     }
 
+                    // Handle greenhouse sensor data
+                    String parentID = topicLevels[1];
+                    SensorData sensorData = new SensorData();
+                    sensorData.setParentId(parentID);
+                    // {"temperature":31.89999962,"humidity":40,"light_state":"OFF","source":"arduino"}
+                    incomingMessage = incomingMessage.replace("{", "").replace("}", "").replace("\"", "");
+                    String[] sensorDataArray = incomingMessage.split(",");
+                    for (String sensorDataString : sensorDataArray) {
+
+                        String[] sensorDataPair = sensorDataString.split(":");
+                        if (sensorDataPair.length < 2) {
+                            continue;
+                        }
+
+                        String sensorType = sensorDataPair[0];
+                        String sensorValue = sensorDataPair[1];
+
+                        if (sensorType.equals("source") && !sensorValue.equals("arduino")) {
+                            return;
+                        }
+
+                        switch (sensorType) {
+                            case "temperature":
+                                sensorData.setTemperature((double) Math.round(Double.valueOf(sensorValue)));
+                                break;
+                            case "humidity":
+                                sensorData.setHumidity((double) Math.round(Double.valueOf(sensorValue)));
+                                break;
+                            case "light_state":
+                                sensorData.setLight(sensorValue.equals("ON"));
+                                break;
+                        }
+                    }
+                    sensorData.setTimestamp(timestamp);
+
                     if (topicLevels[0].equals("greenhouse")) {
-                        // Handle greenhouse sensor data
-                        String greenhouseID = topicLevels[1];
-                        String sensorType = topicLevels[2];
-                        greenhouseViewModel.updateGreenhouseSensorData(greenhouseID, sensorType, incomingMessage, timestamp);
+                        sensorData.setParentType(SensorHolderType.GREENHOUSE);
+                        greenhouseViewModel.addSensor(sensorData);
                     } else if (topicLevels[0].equals("plant")) {
-                        // Handle plant sensor data
-                        String plantID = topicLevels[1];
-                        String sensorType = topicLevels[2];
-                        plantViewModel.updatePlantSensorData(plantID, sensorType, incomingMessage, timestamp);
+                        sensorData.setParentType(SensorHolderType.PLANT);
+                        plantViewModel.addSensor(sensorData);
                     }
                 });
             }

@@ -57,8 +57,6 @@ public class PlantRepository {
 
         return liveData;
     }
-
-
     public MutableLiveData<List<Plant>> getPlantsByGreenhouse(String greenhouseId) {
         MutableLiveData<List<Plant>> liveData = new MutableLiveData<>();
 
@@ -76,7 +74,9 @@ public class PlantRepository {
                                         documentSnapshot.getString("name"),
                                         documentSnapshot.getString("greenhouseId"),
                                         documentSnapshot.getString("userId"),
-                                        documentSnapshot.getString("specie"));
+                                        documentSnapshot.getString("specie"),
+                                        documentSnapshot.getString("greenhousename"));
+
                                 plantList.add(plant);
                             }
                         }
@@ -88,6 +88,8 @@ public class PlantRepository {
                         liveData.setValue(null); // Set value to null or some error state
                     }
                 });
+
+
 
         return liveData;
     }

@@ -19,9 +19,9 @@ import pt.uc.dei.cm.plantsmc.model.Plant;
 public class PlantAdapter extends RecyclerView.Adapter<PlantAdapter.ViewHolder> {
 
     private List<Plant> plantList;
-    private PlantsHolder parent;
+    private PlantsViewHolder parent;
 
-    public PlantAdapter(PlantsHolder parent) {
+    public PlantAdapter(PlantsViewHolder parent) {
         plantList = new ArrayList<>();
         this.parent = parent;
     }

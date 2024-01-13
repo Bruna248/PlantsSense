@@ -1,32 +1,42 @@
 package pt.uc.dei.cm.plantsmc.model;
 
-public class SensorData {
-    private int id;
+import java.io.Serializable;
 
+public class SensorData implements Serializable {
+    private String id;
     private Double temperature;
     private Double humidity;
     private boolean light;
     private String parentId;
-    private String parentType;
+    private SensorHolderType parentType;
     private String timestamp;
+    private String userId;
 
     public SensorData() {
     }
 
-    public SensorData(int id, Double temperature, Double humidity, String parentId, String parentType, String timestamp) {
+    public SensorData(String id,Double temperature, Double humidity, String parentId, SensorHolderType parentType, String timestamp, String userId) {
         this.id = id;
         this.temperature = temperature;
         this.humidity = humidity;
         this.parentId = parentId;
         this.parentType = parentType;
         this.timestamp = timestamp;
+        this.userId = userId;
     }
 
-    public int getId() {
+    public SensorData(String id, String parentId, SensorHolderType parentType, String timestamp) {
+        this.id = id;
+        this.parentId = parentId;
+        this.parentType = parentType;
+        this.timestamp = timestamp;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -70,11 +80,32 @@ public class SensorData {
         this.parentId = parentId;
     }
 
-    public String getParentType() {
+    public SensorHolderType getParentType() {
         return parentType;
     }
 
-    public void setParentType(String parentType) {
+    public void setParentType(SensorHolderType parentType) {
         this.parentType = parentType;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public SensorDataObject toSensorDataObject(SensorType sensorType) {
+        switch (sensorType) {
+            case TEMPERATURE:
+                return new SensorDataObject(this.id, this.temperature, this.timestamp, sensorType);
+            case HUMIDITY:
+                return new SensorDataObject(this.id, this.humidity, this.timestamp, sensorType);
+            case LIGHT:
+                return new SensorDataObject(this.id, this.light ? 1.0 : 0.0, this.timestamp, sensorType);
+            default:
+                return null;
+        }
     }
 }

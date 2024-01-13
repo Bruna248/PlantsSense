@@ -16,19 +16,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import pt.uc.dei.cm.plantsmc.R;
-import pt.uc.dei.cm.plantsmc.model.Plant;
 import pt.uc.dei.cm.plantsmc.view.adapters.PlantAdapter;
-import pt.uc.dei.cm.plantsmc.view.adapters.PlantsHolder;
+import pt.uc.dei.cm.plantsmc.view.adapters.PlantsViewHolder;
 import pt.uc.dei.cm.plantsmc.viewmodel.PlantViewModel;
 
 public class PlantsFragment extends Fragment {
-
     private static final String ARG_GREENHOUSE_ID = "arg_greenhouse_id";
     private PlantViewModel viewModel;
-    private PlantsHolder parent;
+    private PlantsViewHolder parent;
     private PlantAdapter adapter;
     private String greenhouseId;
-
     public PlantsFragment() {
         // Required empty public constructor
     }
@@ -45,8 +42,8 @@ public class PlantsFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         Fragment parentFragment = getParentFragment();
-        if (parentFragment instanceof PlantsHolder) {
-            parent = (PlantsHolder) parentFragment;
+        if (parentFragment instanceof PlantsViewHolder) {
+            parent = (PlantsViewHolder) parentFragment;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement PlantsHolder");

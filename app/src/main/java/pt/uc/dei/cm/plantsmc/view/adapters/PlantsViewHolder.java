@@ -1,9 +1,8 @@
 package pt.uc.dei.cm.plantsmc.view.adapters;
 
-import pt.uc.dei.cm.plantsmc.model.Greenhouse;
 import pt.uc.dei.cm.plantsmc.model.Plant;
 
-public interface PlantsHolder {
+public interface PlantsViewHolder {
     void onAddPlant();
     void onPlantClick(Plant plant);
 

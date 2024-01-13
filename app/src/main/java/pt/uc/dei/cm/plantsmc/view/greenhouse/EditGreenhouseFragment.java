@@ -15,7 +15,7 @@ import android.widget.EditText;
 
 import pt.uc.dei.cm.plantsmc.R;
 import pt.uc.dei.cm.plantsmc.model.Greenhouse;
-import pt.uc.dei.cm.plantsmc.view.adapters.GreenhouseHolder;
+import pt.uc.dei.cm.plantsmc.view.adapters.GreenhouseViewHolder;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,7 +26,7 @@ public class EditGreenhouseFragment extends Fragment {
 
     private static final String ARG_GREENHOUSE = "arg_greenhouse";
     private Greenhouse greenhouse;
-    private GreenhouseHolder parent;
+    private GreenhouseViewHolder parent;
 
     private Button saveGreenhouseButton;
     private EditText greenhouseNameEditText;
@@ -38,8 +38,8 @@ public class EditGreenhouseFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof GreenhouseHolder) {
-            parent = (GreenhouseHolder) context;
+        if (context instanceof GreenhouseViewHolder) {
+            parent = (GreenhouseViewHolder) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement GreenhouseHolder");
@@ -80,12 +80,14 @@ public class EditGreenhouseFragment extends Fragment {
             if (greenhouseName.isEmpty()) {
                 greenhouseNameEditText.setError("Please enter a name for the greenhouse");
             } else {
-                // Create greenhouse object
+
                 if (this.greenhouse == null) {
                     this.greenhouse = new Greenhouse(greenhouseName);
+
                 } else {
                     this.greenhouse.setName(greenhouseName);
                 }
+
                 parent.saveGreenhouse(greenhouse);
 
                 // Pop the current fragment

@@ -10,29 +10,26 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.widget.TextView;
+import pt.uc.dei.cm.plantsmc.viewmodel.UserViewModel;
 
+import java.util.Objects;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
-
-import java.util.Objects;
 
 import pt.uc.dei.cm.plantsmc.R;
 import pt.uc.dei.cm.plantsmc.view.adapters.GreenhouseAdapter;
-import pt.uc.dei.cm.plantsmc.view.adapters.GreenhouseHolder;
+import pt.uc.dei.cm.plantsmc.view.adapters.GreenhouseViewHolder;
 import pt.uc.dei.cm.plantsmc.viewmodel.GreenhouseViewModel;
-import pt.uc.dei.cm.plantsmc.viewmodel.UserViewModel;
 
 public class GreenhousesFragment extends Fragment {
 
-    private GreenhouseViewModel greenhouseViewModel;
-    private UserViewModel userViewModel;
-
-    private GreenhouseHolder parent;
+    private GreenhouseViewModel viewModel;
+    private GreenhouseViewHolder parent;
     private GreenhouseAdapter adapter;
-
+    private UserViewModel userViewModel;
     public GreenhousesFragment() {
         // Required empty public constructor
     }
@@ -40,8 +37,8 @@ public class GreenhousesFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof GreenhouseHolder) {
-            parent = (GreenhouseHolder) context;
+        if (context instanceof GreenhouseViewHolder) {
+            parent = (GreenhouseViewHolder) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement GreenhouseHolder");
@@ -51,8 +48,9 @@ public class GreenhousesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        greenhouseViewModel = new ViewModelProvider(this).get(GreenhouseViewModel.class);
+        viewModel = new ViewModelProvider(this).get(GreenhouseViewModel.class);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+
     }
 
     @Override
@@ -67,17 +65,17 @@ public class GreenhousesFragment extends Fragment {
         // Add greenhouse button
         setup_add_greenhouse(view);
 
+
         setup_fragment_title(view);
 
         return view;
     }
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        greenhouseViewModel.getGreenhouses().observe(getViewLifecycleOwner(), greenhouses -> {
+        viewModel.getGreenhouses().observe(getViewLifecycleOwner(), greenhouses -> {
             // Update UI with the list of greenhouses
             adapter.setGreenhouses(greenhouses);
             adapter.notifyDataSetChanged();
@@ -96,7 +94,7 @@ public class GreenhousesFragment extends Fragment {
         TextView titleTextView = view.findViewById(R.id.textViewHelloUser);
 
         String[] parsedEmail = Objects.requireNonNull(userViewModel.getCurrentUser()
-                .getValue())
+                        .getValue())
                 .getEmail()
                 .split("@");
 

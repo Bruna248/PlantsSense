@@ -1,6 +1,7 @@
 package pt.uc.dei.cm.plantsmc.viewmodel;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -11,26 +12,33 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import pt.uc.dei.cm.plantsmc.model.Plant;
 import pt.uc.dei.cm.plantsmc.model.PlantRepository;
 import pt.uc.dei.cm.plantsmc.model.SensorData;
+import pt.uc.dei.cm.plantsmc.model.SensorDataObject;
+import pt.uc.dei.cm.plantsmc.model.SensorRepository;
+import pt.uc.dei.cm.plantsmc.model.SensorType;
+import pt.uc.dei.cm.plantsmc.view.adapters.SensorVMHolder;
 
-public class PlantViewModel extends ViewModel {
+public class PlantViewModel extends ViewModel implements SensorVMHolder {
 
     private final MutableLiveData<List<Plant>> plants;
     private MutableLiveData<List<Plant>> plantsByGreenhouse = new MutableLiveData<>();
     private final MutableLiveData<Plant> selectedPlant = new MutableLiveData<>();
-    private final PlantRepository repository;
-    private final Map<String, MutableLiveData<SensorData>> plantSensorDataMap = new HashMap<>();
+    private final PlantRepository plantRepository;
+    private final SensorRepository sensorRepository;
+    private final Map<String, MutableLiveData<List<SensorData>>> plantSensorDataMap = new HashMap<>();
 
     public PlantViewModel() {
-        repository = new PlantRepository();
-        this.plants = repository.getPlants();
+        plantRepository = new PlantRepository();
+        sensorRepository = new SensorRepository();
+        this.plants = plantRepository.getPlants();
     }
 
     public void setPlantsByGreenhouse(String greenhouseId) {
-        this.plantsByGreenhouse = repository.getPlantsByGreenhouse(greenhouseId);
+        this.plantsByGreenhouse = plantRepository.getPlantsByGreenhouse(greenhouseId);
     }
 
     public MutableLiveData<List<Plant>> getPlants() {
@@ -49,57 +57,49 @@ public class PlantViewModel extends ViewModel {
         selectedPlant.setValue(plant);
     }
 
-    public LiveData<SensorData> getSpecificGreenhouseSensorData(String greenhouseID) {
-        MutableLiveData<SensorData> liveData = plantSensorDataMap.get(greenhouseID);
-        if (liveData == null) {
-            liveData = new MutableLiveData<>();
-            plantSensorDataMap.put(greenhouseID, liveData);
-        }
-        return liveData;
-    }
 
-    public void updatePlantSensorData(String plantId, String sensorType, String sensorValue, String timestamp) {
-        // Get or create the MutableLiveData for the given greenhouse ID
-        MutableLiveData<SensorData> liveData = plantSensorDataMap.get(plantId);
-        if (liveData == null) {
-            liveData = new MutableLiveData<>();
-            plantSensorDataMap.put(plantId, liveData);
-        }
+    @Override
+    public LiveData<List<SensorDataObject>> getSensorsObjectByType(String plantId, SensorType sensorType) {
+        MutableLiveData<List<SensorDataObject>> sensorObjectLiveData = new MutableLiveData<>();
 
-        SensorData sensorData = liveData.getValue();
-        if (sensorData == null) {
-            sensorData = new SensorData();
-        }
-        sensorData.setParentId(plantId);
-        sensorData.setParentType(Plant.class.getSimpleName());
-        sensorData.setTimestamp(timestamp);
 
-        // Update the sensor data based on sensor type
-        switch (sensorType) {
-            case "temperature":
-                sensorData.setTemperature(Double.valueOf(sensorValue));
-                break;
-            case "humidity":
-                sensorData.setHumidity(Double.valueOf(sensorValue));
-                break;
-            case "light":
-                sensorData.setLight(Boolean.parseBoolean(sensorValue));
-                break;
-        }
-
-        liveData.postValue(sensorData);
-    }
-
-    public LiveData<Double> getTemperatureDataForPlant(String plantId) {
-        MutableLiveData<Double> temperatureLiveData = new MutableLiveData<>();
-
-        LiveData<SensorData> sensorLiveData = plantSensorDataMap.get(plantId);
+        LiveData<List<SensorData>> sensorLiveData = plantSensorDataMap.get(plantId);
         if (sensorLiveData != null) {
-            sensorLiveData.observeForever(new Observer<SensorData>() {
+
+            List<SensorDataObject> sensorDataObjects = new ArrayList<>();
+            for (SensorData sensorData : Objects.requireNonNull(sensorLiveData.getValue())) {
+                sensorDataObjects.add(sensorData.toSensorDataObject(sensorType));
+            }
+            sensorObjectLiveData.postValue(sensorDataObjects);
+
+            sensorLiveData.observeForever(new Observer<List<SensorData>>() {
                 @Override
-                public void onChanged(SensorData sensorData) {
-                    if (sensorData != null) {
-                        temperatureLiveData.postValue(sensorData.getTemperature());
+                public void onChanged(List<SensorData> sensorsData) {
+                    if (sensorsData != null) {
+                        List<SensorDataObject> sensorDataObjects = new ArrayList<>();
+                        for (SensorData sensorData : sensorsData) {
+                            sensorDataObjects.add(sensorData.toSensorDataObject(sensorType));
+                        }
+                        sensorObjectLiveData.postValue(sensorDataObjects);
+                    }
+                }
+            });
+        }
+        return sensorObjectLiveData;
+    }
+
+    @Override
+    public LiveData<SensorDataObject> getTemperatureData(String plantId) {
+        MutableLiveData<SensorDataObject> temperatureLiveData = new MutableLiveData<>();
+
+        LiveData<List<SensorData>> sensorLiveData = plantSensorDataMap.get(plantId);
+        if (sensorLiveData != null) {
+            sensorLiveData.observeForever(new Observer<List<SensorData>>() {
+                @Override
+                public void onChanged(List<SensorData> sensorsData) {
+                    if (sensorsData != null) {
+                        int lastIndex = sensorsData.size()-1;
+                        temperatureLiveData.postValue(sensorsData.get(lastIndex).toSensorDataObject(SensorType.TEMPERATURE));
                     }
                 }
             });
@@ -108,16 +108,18 @@ public class PlantViewModel extends ViewModel {
         return temperatureLiveData;
     }
 
-    public LiveData<Double> getHumidityDataForPlant(String plantId) {
-        MutableLiveData<Double> humidityLiveData = new MutableLiveData<>();
+    @Override
+    public LiveData<SensorDataObject> getHumidityData(String plantId) {
+        MutableLiveData<SensorDataObject> humidityLiveData = new MutableLiveData<>();
 
-        LiveData<SensorData> sensorLiveData = plantSensorDataMap.get(plantId);
+        LiveData<List<SensorData>> sensorLiveData = plantSensorDataMap.get(plantId);
         if (sensorLiveData != null) {
-            sensorLiveData.observeForever(new Observer<SensorData>() {
+            sensorLiveData.observeForever(new Observer<List<SensorData>>() {
                 @Override
-                public void onChanged(SensorData sensorData) {
-                    if (sensorData != null) {
-                        humidityLiveData.postValue(sensorData.getHumidity());
+                public void onChanged(List<SensorData> sensorsData) {
+                    if (sensorsData != null) {
+                        int lastIndex = sensorsData.size()-1;
+                        humidityLiveData.postValue(sensorsData.get(lastIndex).toSensorDataObject(SensorType.HUMIDITY));
                     }
                 }
             });
@@ -127,7 +129,7 @@ public class PlantViewModel extends ViewModel {
     }
 
     public void addPlant(Plant plant) {
-        repository.addPlant(plant, task -> {
+        plantRepository.addPlant(plant, task -> {
             if (task.isSuccessful()) {
                 Log.d("Firestore", "Plant added successfully");
                 String newPlantId = task.getResult().getId();
@@ -142,6 +144,37 @@ public class PlantViewModel extends ViewModel {
             } else {
                 Exception e = task.getException();
                 Log.e("Firestore", "Error adding plant", e);
+            }
+        });
+    }
+
+
+    @Override
+    public void addSensor(SensorData sensorData) {
+        sensorRepository.addSensor(sensorData, task -> {
+            if (task.isSuccessful()) {
+                Log.d("Firestore", "Sensor added successfully");
+
+                MutableLiveData<List<SensorData>> liveData = plantSensorDataMap.get(sensorData.getParentId());
+                if (liveData == null) {
+                    liveData = new MutableLiveData<>();
+                    plantSensorDataMap.put(sensorData.getParentId(), liveData);
+                }
+
+                String newSensorId = task.getResult().getId();
+                sensorData.setId(newSensorId);
+
+                List<SensorData> updatedList = liveData.getValue();
+                if (updatedList == null) {
+                    updatedList = new ArrayList<>();
+                }
+                updatedList.add(sensorData);
+                liveData.postValue(updatedList);
+            } else {
+                // Handle error
+                Exception e = task.getException();
+                Log.e("Firestore", "Error adding sensor", e);
+                Toast.makeText(null, "Error adding sensor", Toast.LENGTH_SHORT).show();
             }
         });
     }

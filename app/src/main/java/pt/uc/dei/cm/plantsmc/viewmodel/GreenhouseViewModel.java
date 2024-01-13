@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
@@ -12,22 +13,30 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import pt.uc.dei.cm.plantsmc.model.Greenhouse;
 import pt.uc.dei.cm.plantsmc.model.GreenhouseRepository;
 import pt.uc.dei.cm.plantsmc.model.SensorData;
+import pt.uc.dei.cm.plantsmc.model.SensorDataObject;
+import pt.uc.dei.cm.plantsmc.model.SensorRepository;
+import pt.uc.dei.cm.plantsmc.model.SensorType;
+import pt.uc.dei.cm.plantsmc.view.adapters.SensorVMHolder;
 
-public class GreenhouseViewModel extends ViewModel {
+public class GreenhouseViewModel extends ViewModel implements SensorVMHolder {
 
     private final MutableLiveData<List<Greenhouse>> greenhouses;
     private final MutableLiveData<Greenhouse> selectedGreenhouse = new MutableLiveData<>();
-    private Map<String, MutableLiveData<SensorData>> greenhouseSensorDataMap = new HashMap<>();
+    private final Map<String, MutableLiveData<List<SensorData>>> greenhouseSensorDataMap = new HashMap<>();
 
-    private final GreenhouseRepository repository;
+    private final GreenhouseRepository greenhouseRepository;
+    private final SensorRepository sensorRepository;
 
     public GreenhouseViewModel() {
-        repository = new GreenhouseRepository();
-        greenhouses = repository.getGreenhouses();
+        greenhouseRepository = new GreenhouseRepository();
+        greenhouses = greenhouseRepository.getGreenhouses();
+
+        sensorRepository = new SensorRepository();
     }
 
     public LiveData<List<Greenhouse>> getGreenhouses() {
@@ -56,49 +65,39 @@ public class GreenhouseViewModel extends ViewModel {
         });
     }
 
-    public LiveData<SensorData> getSpecificGreenhouseSensorData(String greenhouseID) {
-        MutableLiveData<SensorData> liveData = greenhouseSensorDataMap.get(greenhouseID);
-        if (liveData == null) {
-            liveData = new MutableLiveData<>();
-            greenhouseSensorDataMap.put(greenhouseID, liveData);
-        }
-        return liveData;
-    }
+    @Override
+    public LiveData<List<SensorDataObject>> getSensorsObjectByType(String greenhouseID, SensorType sensorType) {
+        MutableLiveData<List<SensorDataObject>> sensorObjectLiveData = new MutableLiveData<>();
 
-    public void updateGreenhouseSensorData(String greenhouseID, String sensorType, String sensorValue, String timestamp) {
-        // Get or create the MutableLiveData for the given greenhouse ID
-        MutableLiveData<SensorData> liveData = greenhouseSensorDataMap.get(greenhouseID);
-        if (liveData == null) {
-            liveData = new MutableLiveData<>();
-            greenhouseSensorDataMap.put(greenhouseID, liveData);
-        }
 
-        SensorData sensorData = liveData.getValue();
-        if (sensorData == null) {
-            sensorData = new SensorData();
-        }
-        sensorData.setParentId(greenhouseID);
-        sensorData.setParentType(Greenhouse.class.getSimpleName());
-        sensorData.setTimestamp(timestamp);
+        LiveData<List<SensorData>> sensorLiveData = greenhouseSensorDataMap.get(greenhouseID);
+        if (sensorLiveData != null) {
 
-        // Update the sensor data based on sensor type
-        switch (sensorType) {
-            case "temperature":
-                sensorData.setTemperature(Double.valueOf(sensorValue));
-                break;
-            case "humidity":
-                sensorData.setHumidity(Double.valueOf(sensorValue));
-                break;
-            case "light":
-                sensorData.setLight(Boolean.parseBoolean(sensorValue));
-                break;
-        }
+            List<SensorDataObject> sensorDataObjects = new ArrayList<>();
+            for (SensorData sensorData : Objects.requireNonNull(sensorLiveData.getValue())) {
+                sensorDataObjects.add(sensorData.toSensorDataObject(sensorType));
+            }
+            sensorObjectLiveData.postValue(sensorDataObjects);
 
-        liveData.postValue(sensorData);
+            sensorLiveData.observeForever(new Observer<List<SensorData>>() {
+                @Override
+                public void onChanged(List<SensorData> sensorsData) {
+                    if (sensorsData != null) {
+                        List<SensorDataObject> sensorDataObjects = new ArrayList<>();
+                        for (SensorData sensorData : sensorsData) {
+                            sensorDataObjects.add(sensorData.toSensorDataObject(sensorType));
+                        }
+                        sensorObjectLiveData.postValue(sensorDataObjects);
+                    }
+                }
+            });
+        }
+        return sensorObjectLiveData;
     }
 
     public void addGreenhouse(Greenhouse greenhouse) {
-        repository.addGreenhouse(greenhouse, task -> {
+
+        greenhouseRepository.addGreenhouse(greenhouse, task -> {
             if (task.isSuccessful()) {
                 Log.d("Firestore", "Greenhouse added successfully");
                 String newGreenhouseId = task.getResult().getId();
@@ -120,7 +119,7 @@ public class GreenhouseViewModel extends ViewModel {
     }
 
     public void updateGreenhouse(Greenhouse greenhouse) {
-        repository.updateGreenhouse(greenhouse, task -> {
+        greenhouseRepository.updateGreenhouse(greenhouse, task -> {
             if (task.isSuccessful()) {
                 Log.d("Firestore", "Greenhouse updated successfully");
 
@@ -138,5 +137,75 @@ public class GreenhouseViewModel extends ViewModel {
                 Toast.makeText(null, "Error adding greenhouse", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void addSensor(SensorData sensorData) {
+        sensorRepository.addSensor(sensorData, task -> {
+            if (task.isSuccessful()) {
+                Log.d("Firestore", "Sensor added successfully");
+
+                MutableLiveData<List<SensorData>> liveData = greenhouseSensorDataMap.get(sensorData.getParentId());
+                if (liveData == null) {
+                    liveData = new MutableLiveData<>();
+                    greenhouseSensorDataMap.put(sensorData.getParentId(), liveData);
+                }
+
+                String newSensorId = task.getResult().getId();
+                sensorData.setId(newSensorId);
+
+                List<SensorData> updatedList = liveData.getValue();
+                if (updatedList == null) {
+                    updatedList = new ArrayList<>();
+                }
+                updatedList.add(sensorData);
+                liveData.postValue(updatedList);
+            } else {
+                // Handle error
+                Exception e = task.getException();
+                Log.e("Firestore", "Error adding sensor", e);
+                Toast.makeText(null, "Error adding sensor", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public LiveData<SensorDataObject> getTemperatureData(String greenhouseId) {
+        MutableLiveData<SensorDataObject> temperatureLiveData = new MutableLiveData<>();
+
+        LiveData<List<SensorData>> sensorLiveData = greenhouseSensorDataMap.get(greenhouseId);
+        if (sensorLiveData != null) {
+            sensorLiveData.observeForever(new Observer<List<SensorData>>() {
+                @Override
+                public void onChanged(List<SensorData> sensorsData) {
+                    if (sensorsData != null) {
+                        int lastIndex = sensorsData.size()-1;
+                        temperatureLiveData.postValue(sensorsData.get(lastIndex).toSensorDataObject(SensorType.TEMPERATURE));
+                    }
+                }
+            });
+        }
+
+        return temperatureLiveData;
+    }
+
+    @Override
+    public LiveData<SensorDataObject> getHumidityData(String plantId) {
+        MutableLiveData<SensorDataObject> humidityLiveData = new MutableLiveData<>();
+
+        LiveData<List<SensorData>> sensorLiveData = greenhouseSensorDataMap.get(plantId);
+        if (sensorLiveData != null) {
+            sensorLiveData.observeForever(new Observer<List<SensorData>>() {
+                @Override
+                public void onChanged(List<SensorData> sensorsData) {
+                    if (sensorsData != null) {
+                        int lastIndex = sensorsData.size()-1;
+                        humidityLiveData.postValue(sensorsData.get(lastIndex).toSensorDataObject(SensorType.HUMIDITY));
+                    }
+                }
+            });
+        }
+
+        return humidityLiveData;
     }
 }

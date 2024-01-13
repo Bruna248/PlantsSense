@@ -18,9 +18,9 @@ import pt.uc.dei.cm.plantsmc.model.Greenhouse;
 public class GreenhouseAdapter extends RecyclerView.Adapter<GreenhouseAdapter.ViewHolder> {
 
     private List<Greenhouse> greenhouseList;
-    private GreenhouseHolder parent;
+    private GreenhouseViewHolder parent;
 
-    public GreenhouseAdapter(GreenhouseHolder parent) {
+    public GreenhouseAdapter(GreenhouseViewHolder parent) {
         greenhouseList = new ArrayList<>();
         this.parent = parent;
     }
@@ -37,7 +37,6 @@ public class GreenhouseAdapter extends RecyclerView.Adapter<GreenhouseAdapter.Vi
         Greenhouse greenhouse = greenhouseList.get(position);
         holder.greenhouseNameTextView.setText(greenhouse.getName());
         holder.imageView.setImageResource(R.drawable.field1);
-
 
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
