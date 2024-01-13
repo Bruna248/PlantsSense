@@ -48,7 +48,10 @@ public class GreenhouseRepository {
                     for (QueryDocumentSnapshot documentSnapshot : querySnapshot) {
                         Greenhouse greenhouse = new Greenhouse(documentSnapshot.getId(),
                                 documentSnapshot.getString("name"),
-                                documentSnapshot.getString("userId"));
+                                documentSnapshot.getString("userId"),
+                                documentSnapshot.getDouble("latitude"),
+                                documentSnapshot.getDouble("longitude")
+                                );
                         greenhouseList.add(greenhouse);
                     }
                 }
@@ -77,30 +80,27 @@ public class GreenhouseRepository {
                 .addOnCompleteListener(onCompleteListener);
     }
 
-    public void addGalleryPhoto(Uri imageUri, OnCompleteListener<UploadTask.TaskSnapshot> onCompleteListener) {
+    public void addGalleryPhoto(Uri imageUri, Greenhouse greenhouse, OnCompleteListener<UploadTask.TaskSnapshot> onCompleteListener) {
         final String randomKey = UUID.randomUUID().toString();
         StorageReference sRef = storageReference.child("images/" + randomKey);
         sRef.putFile(imageUri)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        sRef.getDownloadUrl()
-                                .addOnSuccessListener(uri -> {
-                                    String downloadUrl = uri.toString();
-
-                                    // Create a Map to store the data
-                                    /*Map<String, Object> data = new HashMap<>();
-                                    data.put("downloadUrl", downloadUrl);
-                                    firestore.collection("images").add(data);*/
-
-                                })
-                                .addOnFailureListener(e -> {
-
-                                });
-                        
-                        onCompleteListener.onComplete(task);
-                    } else {
-                        onCompleteListener.onComplete(task);
-                    }
-                });
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    sRef.getDownloadUrl()
+                        .addOnSuccessListener(uri -> {
+                            String downloadUrl = uri.toString();
+                            Map<String, Object> data = new HashMap<>();
+                            data.put("downloadUrl", downloadUrl);
+                            data.put("greenhouseID", greenhouse.getId());
+                            firestore.collection("images").add(data);
+                        })
+                        .addOnFailureListener(e -> {
+                            // ?
+                        });
+                    onCompleteListener.onComplete(task);
+                } else {
+                    onCompleteListener.onComplete(task);
+                }
+            });
     }
 }

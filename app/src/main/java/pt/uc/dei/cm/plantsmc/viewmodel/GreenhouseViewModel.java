@@ -248,8 +248,8 @@ public class GreenhouseViewModel extends ViewModel implements SensorVMHolder {
         return humidityLiveData;
     }
 
-    public void addGalleryPhoto(Uri image) {
-        repository.addGalleryPhoto(image, task -> {
+    public void addGalleryPhoto(Uri image, Greenhouse greenhouse) {
+        repository.addGalleryPhoto(image, greenhouse, task -> {
             if (task.isSuccessful()) {
                 Log.d("Firestore", "Gallery photo added successfully");
                 //Toast.makeText(null, "Gallery photo added successfully", Toast.LENGTH_SHORT).show();

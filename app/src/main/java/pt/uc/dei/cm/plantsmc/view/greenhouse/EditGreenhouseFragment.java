@@ -1,5 +1,6 @@
 package pt.uc.dei.cm.plantsmc.view.greenhouse;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -30,6 +31,7 @@ public class EditGreenhouseFragment extends Fragment {
 
     private Button saveGreenhouseButton;
     private EditText greenhouseNameEditText;
+    private EditText greenhouseLocationEditText;
 
     public EditGreenhouseFragment() {
         // Required empty public constructor
@@ -69,29 +71,49 @@ public class EditGreenhouseFragment extends Fragment {
         // Set up views
         saveGreenhouseButton = view.findViewById(R.id.saveGreenhouseButton);
         greenhouseNameEditText = view.findViewById(R.id.greenhouseNameEditText);
+        greenhouseLocationEditText = view.findViewById(R.id.greenhouseLocationEditText);
 
         if (greenhouse != null) {
             greenhouseNameEditText.setText(greenhouse.getName());
+            greenhouseLocationEditText.setText(greenhouse.getLatitude() + "," + greenhouse.getLongitude());
         }
 
         // Set up listeners
         saveGreenhouseButton.setOnClickListener(v -> {
             String greenhouseName = greenhouseNameEditText.getText().toString();
+            String greenhouseLocation = greenhouseLocationEditText.getText().toString();
+
             if (greenhouseName.isEmpty()) {
                 greenhouseNameEditText.setError("Please enter a name for the greenhouse");
+            } else if (greenhouseLocation.isEmpty()) {
+                greenhouseLocationEditText.setError("Please enter location coordinates (latitude,longitude)");
             } else {
-
-                if (this.greenhouse == null) {
-                    this.greenhouse = new Greenhouse(greenhouseName);
-
+                // Extract latitude and longitude
+                String[] coordinates = greenhouseLocation.split(",");
+                if (coordinates.length != 2) {
+                    greenhouseLocationEditText.setError("Invalid location coordinates format");
                 } else {
-                    this.greenhouse.setName(greenhouseName);
+                    try {
+                        double latitude = Double.parseDouble(coordinates[0].trim());
+                        double longitude = Double.parseDouble(coordinates[1].trim());
+
+                        // Create greenhouse object
+                        if (this.greenhouse == null) {
+                            this.greenhouse = new Greenhouse(greenhouseName, latitude, longitude);
+                        } else {
+                            this.greenhouse.setName(greenhouseName);
+                            this.greenhouse.setLatitude(latitude);
+                            this.greenhouse.setLongitude(longitude);
+                        }
+
+                        parent.saveGreenhouse(greenhouse);
+
+                        // Pop the current fragment
+                        getParentFragmentManager().popBackStack();
+                    } catch (NumberFormatException e) {
+                        greenhouseLocationEditText.setError("Invalid latitude or longitude format");
+                    }
                 }
-
-                parent.saveGreenhouse(greenhouse);
-
-                // Pop the current fragment
-                getParentFragmentManager().popBackStack();
             }
         });
     }

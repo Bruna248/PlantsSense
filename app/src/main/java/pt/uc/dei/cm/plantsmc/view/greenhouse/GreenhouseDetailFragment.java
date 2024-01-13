@@ -15,7 +15,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.os.Handler;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +75,7 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
     private GreenhouseViewHolder parent;
     SwipeViewAdapter swipeViewAdapter;
     ViewPager2 viewPager;
+    MapView mapView;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -131,10 +134,6 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
         ShapeableImageView imageView = view.findViewById(R.id.field_image);
         imageView.setImageResource(R.drawable.field1);
 
-        MapView mapView = view.findViewById(R.id.mapView);
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this);
-
         Button addPhotoButton = view.findViewById(R.id.addPhotoButton);
         addPhotoButton.setOnClickListener(v -> openGallery());
 
@@ -149,6 +148,11 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
         viewPager = view.findViewById(R.id.pager);
         viewPager.setAdapter(swipeViewAdapter);
         viewPager.setOffscreenPageLimit(2);
+
+
+        mapView = view.findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
 
 
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
@@ -176,12 +180,9 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
     private void handleGalleryResult(Intent data) {
         Uri selectedImageUri = data.getData();
         if (selectedImageUri != null) {
-            greenhouseViewModel.addGalleryPhoto(selectedImageUri);
+            greenhouseViewModel.addGalleryPhoto(selectedImageUri, greenhouse);
         }
     }
-
-
-
 
 
     @Override
@@ -245,11 +246,39 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        // Set up a marker at a specific location
-        LatLng location = new LatLng(37.7749, -122.4194); // Example: San Francisco, CA
-        googleMap.addMarker(new MarkerOptions().position(location).title("Marker Title"));
+        if (greenhouse.getLatitude() != null && greenhouse.getLongitude() != null) {
+            mapView.setVisibility(View.VISIBLE);
+            double latitude = greenhouse.getLatitude();
+            double longitude = greenhouse.getLongitude();
+            Log.d("COORD", ""+latitude+" "+longitude);
+            LatLng location = new LatLng(latitude, longitude);
+            googleMap.addMarker(new MarkerOptions().position(location).title(greenhouse.getName()));
+            //LatLng location = new LatLng(40.2115,-8.4292);
+            //googleMap.addMarker(new MarkerOptions().position(location).title("Marker Title"));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f));
+        } else {
+            mapView.setVisibility(View.GONE);
+            LatLng defaultLocation = new LatLng(0, 0); // Set a default location
+            googleMap.addMarker(new MarkerOptions().position(defaultLocation));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 12.0f));
+        }
+    }
 
-        // Move camera to the marker location and set an appropriate zoom level
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f));
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
     }
 }
