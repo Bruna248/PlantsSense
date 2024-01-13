@@ -1,28 +1,38 @@
 package pt.uc.dei.cm.plantsmc.model;
 
-import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class GreenhouseRepository {
 
     private FirebaseFirestore firestore;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
 
     public GreenhouseRepository() {
         firestore = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
     }
 
     public MutableLiveData<List<Greenhouse>> getGreenhouses() {
@@ -65,5 +75,34 @@ public class GreenhouseRepository {
                 .document(greenhouse.getId())
                 .set(greenhouse)
                 .addOnCompleteListener(onCompleteListener);
+    }
+
+    public void addGalleryPhoto(Uri imageUri, OnCompleteListener<UploadTask.TaskSnapshot> onCompleteListener) {
+        final String randomKey = UUID.randomUUID().toString();
+        StorageReference sRef = storageReference.child("images/" + randomKey);
+        sRef.putFile(imageUri)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        sRef.getDownloadUrl()
+                                .addOnSuccessListener(uri -> {
+                                    String downloadUrl = uri.toString();
+                                    // TODO: Display the image using the download URL
+                                })
+                                .addOnFailureListener(e -> {
+
+                                });
+                        
+                        onCompleteListener.onComplete(task);
+                    } else {
+                        onCompleteListener.onComplete(task);
+                    }
+                });
+
+        // Convert Uri to String
+        String imageUrl = imageUri.toString();
+        // Create a Map to store the data
+        /*Map<String, Object> data = new HashMap<>();
+        data.put("downloadUrl", imageUrl);
+        firestore.collection("images").add(data).addOnCompleteListener(onCompleteListener);*/
     }
 }

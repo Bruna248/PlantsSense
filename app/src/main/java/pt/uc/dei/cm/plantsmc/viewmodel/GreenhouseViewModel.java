@@ -1,5 +1,6 @@
 package pt.uc.dei.cm.plantsmc.viewmodel;
 
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -245,5 +246,19 @@ public class GreenhouseViewModel extends ViewModel implements SensorVMHolder {
         }
 
         return humidityLiveData;
+    }
+
+    public void addGalleryPhoto(Uri image) {
+        repository.addGalleryPhoto(image, task -> {
+            if (task.isSuccessful()) {
+                Log.d("Firestore", "Gallery photo added successfully");
+                //Toast.makeText(null, "Gallery photo added successfully", Toast.LENGTH_SHORT).show();
+            } else {
+                // Handle error
+                Exception e = task.getException();
+                Log.e("Firestore", "Error adding gallery photo", e);
+                Toast.makeText(null, "Error adding gallery photo", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

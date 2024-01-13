@@ -62,6 +62,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth:22.3.0")
+    implementation("com.google.firebase:firebase-storage")
 
     // AnyChart
     implementation ("com.github.AnyChart:AnyChart-Android:1.1.5")
