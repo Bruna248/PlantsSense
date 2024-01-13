@@ -63,6 +63,8 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth:22.3.0")
     implementation("com.google.firebase:firebase-storage")
+    implementation("com.github.bumptech.glide:glide:4.14.22")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     // AnyChart
     implementation ("com.github.AnyChart:AnyChart-Android:1.1.5")
