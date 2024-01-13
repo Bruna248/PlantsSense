@@ -65,6 +65,8 @@ dependencies {
     implementation("com.github.AnyChart:AnyChart-Android:1.1.5")
     implementation(platform("com.google.firebase:firebase-bom:31.0.0"))
     implementation("com.google.firebase:firebase-storage")
+    implementation("com.github.bumptech.glide:glide:4.14.22")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
 
     // MQTT

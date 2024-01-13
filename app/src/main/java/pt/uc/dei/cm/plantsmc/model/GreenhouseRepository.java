@@ -76,7 +76,12 @@ public class GreenhouseRepository {
                         sRef.getDownloadUrl()
                                 .addOnSuccessListener(uri -> {
                                     String downloadUrl = uri.toString();
-                                    // TODO: Display the image using the download URL
+
+                                    // Create a Map to store the data
+                                    /*Map<String, Object> data = new HashMap<>();
+                                    data.put("downloadUrl", downloadUrl);
+                                    firestore.collection("images").add(data);*/
+
                                 })
                                 .addOnFailureListener(e -> {
 
@@ -87,12 +92,5 @@ public class GreenhouseRepository {
                         onCompleteListener.onComplete(task);
                     }
                 });
-
-        // Convert Uri to String
-        String imageUrl = imageUri.toString();
-        // Create a Map to store the data
-        /*Map<String, Object> data = new HashMap<>();
-        data.put("downloadUrl", imageUrl);
-        firestore.collection("images").add(data).addOnCompleteListener(onCompleteListener);*/
     }
 }
