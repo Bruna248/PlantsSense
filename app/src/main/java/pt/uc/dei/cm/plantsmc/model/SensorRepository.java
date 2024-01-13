@@ -1,19 +1,23 @@
 package pt.uc.dei.cm.plantsmc.model;
 
-import android.hardware.Sensor;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SensorRepository {
 
@@ -22,9 +26,17 @@ public class SensorRepository {
         this.firestore = FirebaseFirestore.getInstance();
     }
 
-
     public void addSensorG(SensorG sensorData, OnCompleteListener<DocumentReference> onCompleteListener) {
         firestore.collection("greenhouse_sensors").add(sensorData).addOnCompleteListener(onCompleteListener);
+    }
+
+    public void addMeasureSensorG(Measure measure,String sensorID,OnCompleteListener<DocumentReference> onCompleteListener) {
+        firestore.collection("greenhouse_sensors").document(sensorID).collection("measures").add(measure).addOnCompleteListener(onCompleteListener);
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("measure", measure.getMeasure());
+        updates.put("timestamp", measure.getTimestamp());
+        firestore.collection("greenhouse_sensors").document(sensorID).update(updates);
     }
     public MutableLiveData<List<SensorG>> getSensorsByGreenhouse(String greenhouseId) {
         MutableLiveData<List<SensorG>> liveData = new MutableLiveData<>();
@@ -41,8 +53,16 @@ public class SensorRepository {
                                 SensorG sensorData = new SensorG(
                                         documentSnapshot.getId(),
                                         documentSnapshot.getString("type"),
-                                        documentSnapshot.getString("description"));
-                                        sensorsGList.add(sensorData);
+                                        documentSnapshot.getString("description"),
+                                        documentSnapshot.getString("measure"),
+                                        documentSnapshot.getString("timestamp")
+                                        );
+
+
+                                sensorsGList.add(sensorData);
+
+                                Log.d(sensorData.getType(),sensorData.getType());
+
                             }
                         }
                         liveData.setValue(sensorsGList);
@@ -56,4 +76,7 @@ public class SensorRepository {
 
         return liveData;
     }
+
+
+
 }

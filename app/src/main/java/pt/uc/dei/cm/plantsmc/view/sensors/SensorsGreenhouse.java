@@ -3,6 +3,7 @@ package pt.uc.dei.cm.plantsmc.view.sensors;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +62,7 @@ public class SensorsGreenhouse extends Fragment {
         }
         viewModel = new ViewModelProvider(this).get(SensorsGViewModel.class);
         viewModel.setsensorsByGreenhouse(greenhouseId);
+
     }
 
     @Override
@@ -80,11 +82,10 @@ public class SensorsGreenhouse extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+// a atualizacao dos dados nao esta a ser feita. Ele esta so a ir buscar os sensors de novo
+        //ver melhor isto
         viewModel.getSensorsByGreenhouse().observe(getViewLifecycleOwner(), sensors -> {
             // Update UI with the list of plants
-
-
             adapter.setSensors(sensors);
             adapter.notifyDataSetChanged();
         });

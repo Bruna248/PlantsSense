@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import pt.uc.dei.cm.plantsmc.R;
 import pt.uc.dei.cm.plantsmc.model.Greenhouse;
 import pt.uc.dei.cm.plantsmc.utils.MQTTUtils;
+import pt.uc.dei.cm.plantsmc.utils.MQTTUtils1;
 import pt.uc.dei.cm.plantsmc.view.adapters.GreenhouseHolder;
 import pt.uc.dei.cm.plantsmc.view.auth.LoginActivity;
 import pt.uc.dei.cm.plantsmc.view.greenhouse.EditGreenhouseFragment;
@@ -20,12 +21,14 @@ import pt.uc.dei.cm.plantsmc.view.greenhouse.GreenhouseDetailFragment;
 import pt.uc.dei.cm.plantsmc.view.greenhouse.GreenhousesFragment;
 import pt.uc.dei.cm.plantsmc.viewmodel.GreenhouseViewModel;
 import pt.uc.dei.cm.plantsmc.viewmodel.PlantViewModel;
+import pt.uc.dei.cm.plantsmc.viewmodel.SensorsGViewModel;
 import pt.uc.dei.cm.plantsmc.viewmodel.UserViewModel;
 
 public class MainActivity extends AppCompatActivity implements GreenhouseHolder {
 
     private UserViewModel userViewModel;
     private GreenhouseViewModel greenhouseViewModel;
+    private SensorsGViewModel sensorsGViewModel;
     private PlantViewModel plantViewModel;
 
 
@@ -38,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements GreenhouseHolder 
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         greenhouseViewModel = new ViewModelProvider(this).get(GreenhouseViewModel.class);
         plantViewModel = new ViewModelProvider(this).get(PlantViewModel.class);
+        sensorsGViewModel = new ViewModelProvider(this).get(SensorsGViewModel.class);
+
 
         // Set initial data
         init_data();
@@ -49,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements GreenhouseHolder 
         // Logout button
         setup_logout();
 
-        MQTTUtils.initializeChannel(this, greenhouseViewModel, plantViewModel);
+        MQTTUtils.initializeChannel(this, sensorsGViewModel, plantViewModel);
 
         // Observers for view models
         userViewModel.getCurrentUser().observe(this, firebaseUser -> {

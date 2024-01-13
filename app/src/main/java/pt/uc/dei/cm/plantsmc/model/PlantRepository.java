@@ -22,8 +22,6 @@ public class PlantRepository {
         this.firestore = FirebaseFirestore.getInstance();
     }
 
-
-
     public void addPlant(Plant plant, OnCompleteListener<DocumentReference> onCompleteListener) {
         firestore.collection("plants").add(plant).addOnCompleteListener(onCompleteListener);
     }

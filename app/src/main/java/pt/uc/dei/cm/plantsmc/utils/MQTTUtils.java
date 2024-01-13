@@ -7,20 +7,27 @@ import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.lifecycle.ViewModelProvider;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
+import pt.uc.dei.cm.plantsmc.model.Measure;
+import pt.uc.dei.cm.plantsmc.view.MainActivity;
 import pt.uc.dei.cm.plantsmc.viewmodel.GreenhouseViewModel;
 import pt.uc.dei.cm.plantsmc.viewmodel.PlantViewModel;
+import pt.uc.dei.cm.plantsmc.viewmodel.SensorsGViewModel;
 
 public class MQTTUtils {
 
     private static Mqtt5AsyncClient client;
     private final static String TAG = "MQTT";
 
-    public static void initializeChannel(Context context, GreenhouseViewModel greenhouseViewModel, PlantViewModel plantViewModel) {
+
+    public static void initializeChannel(Context context, SensorsGViewModel sensorsGViewModel, PlantViewModel plantViewModel) {
+
         client = Mqtt5Client.builder()
                 .identifier(UUID.randomUUID().toString())
                 .serverHost("broker.hivemq.com")
@@ -69,9 +76,16 @@ public class MQTTUtils {
                     }
                     if (topicLevels[0].equals("greenhouse")) {
                         // Handle greenhouse sensor data
+                        String sensorID = topicLevels[2];
                         String greenhouseID = topicLevels[1];
-                        String sensorType = topicLevels[2];
-                        greenhouseViewModel.updateGreenhouseSensorData(greenhouseID, sensorType, incomingMessage, timestamp);
+                        Log.d(sensorID,sensorID);
+                        Measure measure=new Measure();
+                        measure.setMeasure(incomingMessage);
+                        measure.setTimestamp(timestamp);
+                        sensorsGViewModel.addMeaure(measure,sensorID);
+                        //Log.d("N sensors",String.valueOf(sensorsGViewModel.getSensorsByGreenhouse().getValue().size()));
+                        //sensorsGViewModel.updateSensorG(greenhouseID, sensorType, incomingMessage, timestamp);
+
                     } else if (topicLevels[0].equals("plant")) {
                         // Handle plant sensor data
                         String plantID = topicLevels[1];

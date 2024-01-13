@@ -27,9 +27,6 @@ public class SensorGreenhouseAdapter extends RecyclerView.Adapter<SensorGreenhou
 
     private List<SensorG> sensorgreenhouseList;
     private SensorsGreenhouseHolder parent;
-
-
-
     public SensorGreenhouseAdapter(SensorsGreenhouseHolder parent) {
         sensorgreenhouseList = new ArrayList<>();
         this.parent = parent;
@@ -47,10 +44,23 @@ public class SensorGreenhouseAdapter extends RecyclerView.Adapter<SensorGreenhou
         SensorG sensorData = sensorgreenhouseList.get(position);
         holder.SensorNameTextView.setText(sensorData.getType());
 
-        if (sensorData.getType().equals("Temperature"))
-        holder.image_view.setBackgroundResource(R.drawable.thermometer_temperature_svgrepo_com);
-        else if (sensorData.getType().equals("Humidity"))
+
+        if (sensorData.getType().equals("Temperature")) {
+            holder.image_view.setBackgroundResource(R.drawable.thermometer_temperature_svgrepo_com);
+            if (sensorData.getMeasure()!=null) {
+                holder.sensorValue.setText(sensorData.getMeasure());
+
+            }
+            if (sensorData.getTimestamp()!=null)
+                holder.timestamp.setText(sensorData.getTimestamp());
+        }
+        else if (sensorData.getType().equals("Humidity")) {
             holder.image_view.setBackgroundResource(R.drawable.baseline_water_24);
+            if (sensorData.getMeasure()!=null)
+                holder.sensorValue.setText(sensorData.getMeasure());
+            if (sensorData.getTimestamp()!=null)
+                holder.timestamp.setText(sensorData.getTimestamp());
+        }
 
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -79,11 +89,15 @@ public class SensorGreenhouseAdapter extends RecyclerView.Adapter<SensorGreenhou
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView SensorNameTextView;
         View image_view;
+        TextView sensorValue;
+        TextView timestamp;
 
         public ViewHolder(View itemView) {
             super(itemView);
             SensorNameTextView = itemView.findViewById(R.id.SensorGName);
             image_view=itemView.findViewById(R.id.image_sensor);
+            sensorValue=itemView.findViewById(R.id.SensorValue);
+            timestamp=itemView.findViewById(R.id.timestamp);
             // Initialize other views from the item layout if they exist
         }
     }
