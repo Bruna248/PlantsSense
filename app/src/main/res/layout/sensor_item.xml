@@ -10,11 +10,11 @@
     android:background="@drawable/greenhouse_item_background"
     android:gravity="center_vertical">
 
-    <View
-        android:id="@+id/image_sensor"
+    <ImageView
+        android:id="@+id/imageViewSensor"
         android:layout_width="75dp"
         android:layout_height="75dp"
-        android:background="@drawable/thermometer_temperature_svgrepo_com" />
+        android:src="@drawable/thermometer_temperature_svgrepo_com" />
 
     <LinearLayout
         android:layout_width="match_parent"

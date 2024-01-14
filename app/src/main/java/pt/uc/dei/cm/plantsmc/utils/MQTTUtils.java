@@ -17,13 +17,14 @@ import pt.uc.dei.cm.plantsmc.model.SensorData;
 import pt.uc.dei.cm.plantsmc.model.SensorHolderType;
 import pt.uc.dei.cm.plantsmc.viewmodel.GreenhouseViewModel;
 import pt.uc.dei.cm.plantsmc.viewmodel.PlantViewModel;
+import pt.uc.dei.cm.plantsmc.viewmodel.UserViewModel;
 
 public class MQTTUtils {
 
     private static Mqtt5AsyncClient client;
     private final static String TAG = "MQTT";
 
-    public static void initializeChannel(Context context, GreenhouseViewModel greenhouseViewModel, PlantViewModel plantViewModel) {
+    public static void initializeChannel(Context context, GreenhouseViewModel greenhouseViewModel, PlantViewModel plantViewModel, UserViewModel userViewModel) {
         client = Mqtt5Client.builder()
                 .identifier(UUID.randomUUID().toString())
                 .serverHost("broker.hivemq.com")
@@ -62,7 +63,9 @@ public class MQTTUtils {
                     String incomingMessage = new String(publish.getPayloadAsBytes());
                     Log.d(TAG, "Received message: " + incomingMessage);
                     SimpleDateFormat timestampID = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault());
-                    String timestamp = timestampID.format(new Date());
+                    Date date = new Date();
+                    String timestamp = timestampID.format(date);
+                    Double doubleTimestamp = date.getTime() / 1000.0;
 
                     // Parse the topic to determine if it's a greenhouse or plant message
                     String[] topicLevels = publish.getTopic().getLevels().toArray(new String[0]);
@@ -105,6 +108,8 @@ public class MQTTUtils {
                         }
                     }
                     sensorData.setTimestamp(timestamp);
+                    sensorData.setCreationDate(doubleTimestamp);
+                    sensorData.setUserId(userViewModel.getCurrentUser().getValue().getUid());
 
                     if (topicLevels[0].equals("greenhouse")) {
                         sensorData.setParentType(SensorHolderType.GREENHOUSE);

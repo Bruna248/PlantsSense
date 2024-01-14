@@ -18,6 +18,7 @@ import pt.uc.dei.cm.plantsmc.model.Plant;
 import pt.uc.dei.cm.plantsmc.model.PlantRepository;
 import pt.uc.dei.cm.plantsmc.model.SensorData;
 import pt.uc.dei.cm.plantsmc.model.SensorDataObject;
+import pt.uc.dei.cm.plantsmc.model.SensorHolderType;
 import pt.uc.dei.cm.plantsmc.model.SensorRepository;
 import pt.uc.dei.cm.plantsmc.model.SensorType;
 import pt.uc.dei.cm.plantsmc.view.adapters.SensorVMHolder;
@@ -35,6 +36,8 @@ public class PlantViewModel extends ViewModel implements SensorVMHolder {
         plantRepository = new PlantRepository();
         sensorRepository = new SensorRepository();
         this.plants = plantRepository.getPlants();
+
+        get_sensor_data();
     }
 
     public void setPlantsByGreenhouse(String greenhouseId) {
@@ -175,6 +178,43 @@ public class PlantViewModel extends ViewModel implements SensorVMHolder {
                 Exception e = task.getException();
                 Log.e("Firestore", "Error adding sensor", e);
                 Toast.makeText(null, "Error adding sensor", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void get_sensor_data() {
+        sensorRepository.getSensorsByParentType(SensorHolderType.GREENHOUSE).observeForever(new Observer<List<SensorData>>() {
+            @Override
+            public void onChanged(List<SensorData> sensorDataList) {
+                if (sensorDataList != null) {
+                    // Temporary map to hold all sensor data lists before posting to LiveData
+                    Map<String, List<SensorData>> tempMap = new HashMap<>();
+
+                    for (SensorData sensorData : sensorDataList) {
+                        List<SensorData> currentList = tempMap.get(sensorData.getParentId());
+                        if (currentList == null) {
+                            currentList = new ArrayList<>();
+                            tempMap.put(sensorData.getParentId(), currentList);
+                        }
+                        currentList.add(sensorData);
+                    }
+
+                    // Now update the LiveData for each greenhouse ID
+                    for (Map.Entry<String, List<SensorData>> entry : tempMap.entrySet()) {
+                        String parentId = entry.getKey();
+                        List<SensorData> aggregatedList = entry.getValue();
+                        MutableLiveData<List<SensorData>> liveData = plantSensorDataMap.get(parentId);
+
+                        if (liveData == null) {
+                            liveData = new MutableLiveData<>();
+                            plantSensorDataMap.put(parentId, liveData);
+                        }
+
+                        // Post the aggregated list of sensor data to the corresponding LiveData
+                        liveData.postValue(aggregatedList);
+                    }
+                }
             }
         });
     }

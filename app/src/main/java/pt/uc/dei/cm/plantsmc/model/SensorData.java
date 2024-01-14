@@ -10,6 +10,7 @@ public class SensorData implements Serializable {
     private String parentId;
     private SensorHolderType parentType;
     private String timestamp;
+    private Double creationDate;
     private String userId;
 
     public SensorData() {
@@ -107,5 +108,13 @@ public class SensorData implements Serializable {
             default:
                 return null;
         }
+    }
+
+    public Double getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Double creationDate) {
+        this.creationDate = creationDate;
     }
 }

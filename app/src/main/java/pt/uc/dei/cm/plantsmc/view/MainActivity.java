@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements GreenhouseViewHol
         // Logout button
         setup_logout();
 
-        MQTTUtils.initializeChannel(this, greenhouseViewModel, plantViewModel);
+        MQTTUtils.initializeChannel(this, greenhouseViewModel, plantViewModel, userViewModel);
 
         // Observers for view models
         userViewModel.getCurrentUser().observe(this, firebaseUser -> {
@@ -110,10 +110,6 @@ public class MainActivity extends AppCompatActivity implements GreenhouseViewHol
 
     @Override
     public void saveGreenhouse(Greenhouse greenhouse) {
-        //greenhouse.setUserId(userViewModel.getCurrentUser().getValue().getUid());
-
-        //String currentID=userViewModel.getCurrentUser().getValue().getUid();
-        //greenhouseViewModel.addGreenhouse(greenhouse);
         if (greenhouse.getId()!=null && greenhouse.getUserId()!=null) {
             greenhouseViewModel.updateGreenhouse(greenhouse);
         } else {

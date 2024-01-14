@@ -1,21 +1,34 @@
 package pt.uc.dei.cm.plantsmc.view.sensors;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.anychart.chart.common.dataentry.DataEntry;
+import com.anychart.chart.common.dataentry.ValueDataEntry;
+import com.anychart.core.cartesian.series.Line;
+import com.anychart.enums.Anchor;
+import com.anychart.enums.MarkerType;
+import com.anychart.graphics.vector.Stroke;
+
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import org.w3c.dom.Text;
+import com.anychart.AnyChart;
+import com.anychart.AnyChartView;
+import com.anychart.charts.Cartesian;
+import com.anychart.enums.TooltipPositionMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pt.uc.dei.cm.plantsmc.R;
-import pt.uc.dei.cm.plantsmc.model.SensorData;
 import pt.uc.dei.cm.plantsmc.model.SensorDataObject;
 import pt.uc.dei.cm.plantsmc.model.SensorHolderType;
 import pt.uc.dei.cm.plantsmc.model.SensorType;
@@ -71,6 +84,15 @@ public class SensorDetailFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sensor_details, container, false);
 
+        setup_sensor_details(view);
+
+        setup_chart(view);
+
+
+        return view;
+    }
+
+    private void setup_sensor_details(View view) {
         TextView textViewSensorTypeDetails = view.findViewById(R.id.textViewSensorTypeDetails);
         TextView textViewSensorValueDetails = view.findViewById(R.id.textViewSensorValueDetails);
         TextView textViewSensorDateDetails = view.findViewById(R.id.textViewSensorDateDetails);
@@ -82,13 +104,67 @@ public class SensorDetailFragment extends Fragment {
             SensorDataObject lastSensor = sensorDataObjects.get(lastSensorDataIndex);
 
             textViewSensorValueDetails.setText(String.format("%s", lastSensor.getMeasurement()));
-            textViewSensorDateDetails.setText(lastSensor.getTimestamp());
+            textViewSensorDateDetails.setText(lastSensor.getTimestamp().replace(" ", "\n"));
         });
-
 
         textViewSensorTypeDetails.setText(sensorType.toString());
 
-        return view;
+        ImageView imageViewSensor = (ImageView) view.findViewById(R.id.imageViewSensor);
+        if (sensorType == SensorType.TEMPERATURE) {
+            imageViewSensor.setImageResource(R.drawable.thermometer_temperature_svgrepo_com);
+        } else if (sensorType == SensorType.HUMIDITY) {
+            imageViewSensor.setImageResource(R.drawable.humidity);
+        }
+    }
+
+    private void setup_chart(View view) {
+        AnyChartView anyChartView = view.findViewById(R.id.any_chart_view);
+        anyChartView.setProgressBar(view.findViewById(R.id.progressBar));
+
+        Cartesian cartesian = AnyChart.line();
+
+        cartesian.animation(true);
+
+        cartesian.background().enabled(true);
+        cartesian.background().fill("#ECECEC");
+
+        cartesian.crosshair().enabled(true);
+        cartesian.crosshair()
+                .yLabel(true)
+                .yStroke((Stroke) null, null, null, (String) null, (String) null);
+
+        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
+
+        cartesian.xAxis(0).title("Time");
+        cartesian.xAxis(0).labels().padding(5d, 5d, 5d, 5d);
+
+        List<DataEntry> seriesData = new ArrayList<>();
+        seriesData.add(new ValueDataEntry("", 0));
+
+        Line series1 = cartesian.line(seriesData);
+        series1.name();
+        series1.hovered().markers().enabled(true);
+        series1.hovered().markers()
+                .type(MarkerType.CIRCLE)
+                .size(4d);
+        series1.tooltip()
+                .position("right")
+                .anchor(Anchor.LEFT_CENTER)
+                .offsetX(5d)
+                .offsetY(5d);
+
+        cartesian.legend().enabled(false);
+
+        anyChartView.setChart(cartesian);
+
+        sensorViewModel.getSensorsObjectByType(parentId, sensorType).observe(getViewLifecycleOwner(), sensorDataObjects -> {
+            seriesData.clear();
+            for (SensorDataObject sensorDataObject : sensorDataObjects) {
+                seriesData.add(new ValueDataEntry(sensorDataObject.getTimestamp(), sensorDataObject.getMeasurement()));
+            }
+
+            series1.data(seriesData);
+        });
     }
 
     @Override

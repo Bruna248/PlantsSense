@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -79,8 +80,8 @@ public class SensorsFragment extends Fragment {
 
         LinearLayout sensorContainer = view.findViewById(R.id.sensorContainerLayout);
 
-        temperatureView = createSensorView("Temperature", "--", false);
-        humidityView = createSensorView("Humidity", "--", false);
+        temperatureView = createSensorView("Temperature");
+        humidityView = createSensorView("Humidity");
 
         sensorViewModel.getTemperatureData(parentId).observe(getViewLifecycleOwner(), temperatureDataObject -> {
             TextView temperatureSensorDataTextView = temperatureView.findViewById(R.id.SensorValue);
@@ -121,7 +122,7 @@ public class SensorsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    private View createSensorView(String sensorName, String sensorValue, boolean isActuator) {
+    private View createSensorView(String sensorName) {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         LinearLayout sensorLayout = (LinearLayout) inflater.inflate(R.layout.sensor_item, null);
 
@@ -135,14 +136,15 @@ public class SensorsFragment extends Fragment {
         sensorNameTextView.setText(sensorName);
 
         TextView sensorValueTextView = sensorLayout.findViewById(R.id.SensorValue);
-        sensorValueTextView.setText(sensorValue);
+        sensorValueTextView.setText("--");
 
 
-        /*SwitchCompat actuatorSwitch = sensorLayout.findViewById(R.id.actuatorSwitch);
-        if (isActuator) {
-            actuatorSwitch.setVisibility(View.VISIBLE);
-            // set up actuator switch if needed
-        }*/
+        ImageView imageViewSensor = (ImageView) sensorLayout.findViewById(R.id.imageViewSensor);
+        if (sensorName.toUpperCase().equals(SensorType.TEMPERATURE.name())) {
+            imageViewSensor.setImageResource(R.drawable.thermometer_temperature_svgrepo_com);
+        } else if (sensorName.toUpperCase().equals(SensorType.HUMIDITY.name())) {
+            imageViewSensor.setImageResource(R.drawable.humidity);
+        }
 
         return sensorLayout;
     }

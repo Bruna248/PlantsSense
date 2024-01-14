@@ -8,11 +8,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class SensorRepository {
@@ -34,23 +36,32 @@ public class SensorRepository {
         firestore.collection("sensors")
                 .whereEqualTo("userId", userId)
                 .whereEqualTo("parentType", parentType.toString())
+                .orderBy("creationDate", Query.Direction.ASCENDING)
                 .get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         List<SensorData> sensorDataList = new ArrayList<>();
                         QuerySnapshot querySnapshot = task.getResult();
                         if (querySnapshot != null) {
                             for (QueryDocumentSnapshot documentSnapshot : querySnapshot) {
-                                SensorData sensorData = new SensorData(
-                                        documentSnapshot.getId(),
-                                        Double.valueOf(
-                                                Objects.requireNonNull(documentSnapshot.getString("temperature"))),
-                                        Double.valueOf(
-                                                Objects.requireNonNull(documentSnapshot.getString("humidity"))),
-                                        documentSnapshot.getString("parentId"),
-                                        parentType,
-                                        documentSnapshot.getString("timestamp"),
-                                        userId);
-                                sensorDataList.add(sensorData);
+                                Map<String, Object> sensorDataMap = documentSnapshot.getData();
+                                if (sensorDataMap.containsKey("temperature") &&
+                                        sensorDataMap.containsKey("humidity") &&
+                                        sensorDataMap.containsKey("parentId") &&
+                                        sensorDataMap.containsKey("parentType") &&
+                                        sensorDataMap.containsKey("timestamp") &&
+                                        sensorDataMap.containsKey("userId")) {
+                                    SensorData sensorData = new SensorData(
+                                            documentSnapshot.getId(),
+                                            (Double) sensorDataMap.get("temperature"),
+                                            (Double) sensorDataMap.get("humidity"),
+                                            (String) sensorDataMap.get("parentId"),
+                                            parentType,
+                                            (String) sensorDataMap.get("timestamp"),
+                                            (String) sensorDataMap.get("userId"));
+                                    sensorDataList.add(sensorData);
+                                } else {
+                                    Log.e("Firestore", "SensorData document does not contain all required fields");
+                                }
                             }
                         }
                         liveData.setValue(sensorDataList);
