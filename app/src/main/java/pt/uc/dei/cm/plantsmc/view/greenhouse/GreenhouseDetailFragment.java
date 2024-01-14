@@ -138,9 +138,14 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
             textViewName.setText(greenhouse.getName());
 
             ShapeableImageView imageView= view.findViewById(R.id.field_image);
-            Glide.with(this)
-                    .load(greenhouse.getImageURL())
-                    .into(imageView);
+            if (greenhouse.getImageURL() != null) {
+                Glide.with(this)
+                        .load(greenhouse.getImageURL())
+                        .into(imageView);
+            }
+            else {
+                imageView.setImageResource(R.drawable.field1);
+            }
         }
 
         RecyclerView galleryRecyclerView = view.findViewById(R.id.galleryRecyclerView);
@@ -208,7 +213,7 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
                 if (images != null) {
                     galleryAdapter.setImages(images);
                     galleryAdapter.notifyDataSetChanged();
-                    //parent.onEditGreenhouse(greenhouse);
+                    getParentFragmentManager().popBackStack();
                 }
             });
         }
