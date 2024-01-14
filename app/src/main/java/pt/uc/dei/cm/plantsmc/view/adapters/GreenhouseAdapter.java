@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.ArrayList;
@@ -36,8 +37,11 @@ public class GreenhouseAdapter extends RecyclerView.Adapter<GreenhouseAdapter.Vi
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Greenhouse greenhouse = greenhouseList.get(position);
         holder.greenhouseNameTextView.setText(greenhouse.getName());
-        holder.imageView.setImageResource(R.drawable.field1);
 
+        Glide.with(holder.itemView.getContext())
+                .load(greenhouse.getImageURL())
+                .error(R.drawable.field1)
+                .into(holder.imageView);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

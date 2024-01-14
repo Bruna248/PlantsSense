@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.fragment.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 

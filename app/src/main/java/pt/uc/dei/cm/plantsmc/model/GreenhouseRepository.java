@@ -46,7 +46,8 @@ public class GreenhouseRepository {
                                 documentSnapshot.getString("name"),
                                 documentSnapshot.getString("userId"),
                                 documentSnapshot.getDouble("latitude"),
-                                documentSnapshot.getDouble("longitude")
+                                documentSnapshot.getDouble("longitude"),
+                                documentSnapshot.getString("imageURL")
                                 );
                         greenhouseList.add(greenhouse);
                     }

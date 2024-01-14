@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -52,15 +53,10 @@ import pt.uc.dei.cm.plantsmc.view.adapters.GreenhouseViewHolder;
 import pt.uc.dei.cm.plantsmc.view.adapters.PlantsViewHolder;
 import pt.uc.dei.cm.plantsmc.view.adapters.SensorsViewHolder;
 import pt.uc.dei.cm.plantsmc.view.adapters.GalleryAdapter;
-import pt.uc.dei.cm.plantsmc.view.adapters.GreenhouseAdapter;
-import pt.uc.dei.cm.plantsmc.view.adapters.GreenhouseHolder;
-import pt.uc.dei.cm.plantsmc.view.adapters.PlantsHolder;
 import pt.uc.dei.cm.plantsmc.view.plant.EditPlantFragment;
 import pt.uc.dei.cm.plantsmc.view.plant.PlantDetailFragment;
-import pt.uc.dei.cm.plantsmc.view.plant.PlantsFragment;
 import pt.uc.dei.cm.plantsmc.viewmodel.GreenhouseViewModel;
 import pt.uc.dei.cm.plantsmc.view.sensors.SensorDetailFragment;
-import pt.uc.dei.cm.plantsmc.viewmodel.GreenhouseViewModel;
 import pt.uc.dei.cm.plantsmc.viewmodel.ImageViewModel;
 import pt.uc.dei.cm.plantsmc.viewmodel.PlantViewModel;
 import pt.uc.dei.cm.plantsmc.viewmodel.UserViewModel;
@@ -81,7 +77,6 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
     private UserViewModel userViewModel;
     private ActivityResultLauncher<Intent> galleryLauncher;
 
-    private GreenhouseViewModel greenhouseViewModel;
     private GreenhouseViewHolder parent;
     SwipeViewAdapter swipeViewAdapter;
     ViewPager2 viewPager;
@@ -141,6 +136,11 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
         if (greenhouse != null) {
             TextView textViewName = view.findViewById(R.id.greenhouseNameTextView);
             textViewName.setText(greenhouse.getName());
+
+            ShapeableImageView imageView= view.findViewById(R.id.field_image);
+            Glide.with(this)
+                    .load(greenhouse.getImageURL())
+                    .into(imageView);
         }
 
         RecyclerView galleryRecyclerView = view.findViewById(R.id.galleryRecyclerView);
@@ -150,10 +150,6 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
 
         // Edit greenhouse button
         setup_edit_greenhouse(view);
-
-
-        ShapeableImageView imageView = view.findViewById(R.id.field_image);
-        imageView.setImageResource(R.drawable.field1);
 
         Button addPhotoButton = view.findViewById(R.id.addPhotoButton);
         addPhotoButton.setOnClickListener(v -> openGallery());
@@ -192,7 +188,7 @@ public class GreenhouseDetailFragment extends Fragment implements PlantsViewHold
         ).attach();
 
         imageViewModel.getImagesByGreenhouse().observe(getViewLifecycleOwner(), images -> {
-            // Update UI with the list of greenhouses
+            // Update UI with the image gallery
             galleryAdapter.setImages(images);
             galleryAdapter.notifyDataSetChanged();
         });

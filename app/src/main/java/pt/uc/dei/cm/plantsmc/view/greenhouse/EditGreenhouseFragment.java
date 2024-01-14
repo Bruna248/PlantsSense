@@ -142,17 +142,23 @@ public class EditGreenhouseFragment extends Fragment {
                             .addOnSuccessListener(downloadUrl -> {
                                 Log.d("Firestore", "Download URL After: " + downloadUrl);
                                 this.greenhouse.setImageURL(downloadUrl);
+                                Log.d("GREENHOUSE 1", this.greenhouse.getImageURL());
+
+                                parent.saveGreenhouse(this.greenhouse);
+
+                                // Pop the current fragment
+                                getParentFragmentManager().popBackStack();
                             })
                             .addOnFailureListener(exception -> {
                                 Log.e("Firestore", "Error adding gallery photo", exception);
                             });
                 }
-                //Log.d("GREENHOUSE", this.greenhouse.getImageURL());
+                else {
+                    parent.saveGreenhouse(this.greenhouse);
 
-                parent.saveGreenhouse(greenhouse);
-
-                // Pop the current fragment
-                getParentFragmentManager().popBackStack();
+                    // Pop the current fragment
+                    getParentFragmentManager().popBackStack();
+                }
             }
         });
     }
@@ -168,6 +174,7 @@ public class EditGreenhouseFragment extends Fragment {
         greenhouseNameEditText = view.findViewById(R.id.greenhouseNameEditText);
         greenhouseLocationEditText = view.findViewById(R.id.greenhouseLocationEditText);
         greenhouseImage = view.findViewById(R.id.field_image);
+        //Log.d("CREATEVIEW", greenhouse.getImageURL());
 
         if (greenhouse != null) {
             greenhouseNameEditText.setText(greenhouse.getName());
@@ -183,6 +190,9 @@ public class EditGreenhouseFragment extends Fragment {
             else {
                 greenhouseImage.setImageResource(android.R.drawable.ic_input_add);
             }
+        }
+        else {
+            greenhouseImage.setImageResource(android.R.drawable.ic_input_add);
         }
 
         return view;
